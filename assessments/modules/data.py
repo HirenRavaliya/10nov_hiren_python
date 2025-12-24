@@ -1,0 +1,4 @@
+
+inventory = {}
+
+sales_history = []
