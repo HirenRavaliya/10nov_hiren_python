@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Profiles (AJAX CRUD){% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Doctor Profiles <small>(AJAX CRUD)</small></h1>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.5rem; align-items: start;">
+    <div class="card">
+      <div class="section-title" id="form-title">Add New Doctor</div>
+      <input type="hidden" id="edit-id" value="">
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input id="doc-name" class="form-control" placeholder="e.g. John Doe">
+      </div>
+
+      <div class="form-group">
+        <label>Specialty</label>
+        <select id="doc-specialty" class="form-control">
+          <option value="">-- Select Specialty --</option>
+          {% for code, name in specialties %}
+          <option value="{{ code }}">{{ name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Hospital</label>
+        <input id="doc-hospital" class="form-control" placeholder="e.g. City Hospital">
+      </div>
+
+      <div class="grid-2" style="gap:1rem;">
+        <div class="form-group">
+          <label>City</label>
+          <input id="doc-city" class="form-control" placeholder="e.g. New York">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input id="doc-phone" class="form-control" placeholder="e.g. +1234567890">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input id="doc-email" type="email" class="form-control" placeholder="e.g. doc@example.com">
+      </div>
+
+      <div style="display:flex;gap:0.5rem; margin-top:1rem;">
+        <button class="btn btn-primary" onclick="saveDoctor()" id="save-btn" style="flex:1;">Add Doctor</button>
+        <button class="btn btn-outline" onclick="cancelEdit()" id="cancel-btn" style="display:none; flex:1;">Cancel</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Doctor List <span id="count" class="badge badge-primary" style="margin-left:0.5rem;">0</span></div>
+      <div id="doctors-container" style="display:flex;flex-direction:column;gap:0.8rem; max-height: 500px; overflow-y: auto; padding-right: 5px;"></div>
+      <div id="empty-msg" style="text-align:center;padding:2rem;display:none; color: var(--text-muted);">
+        No doctor profiles found.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let doctors = [];
+const API = '/q14/api/items/';
+
+async function loadDoctors() {
+  const r = await fetch(API);
+  const data = await r.json();
+  doctors = data.doctors;
+  renderDoctors();
+}
+
+function renderDoctors() {
+  const container = document.getElementById('doctors-container');
+  const emptyMsg = document.getElementById('empty-msg');
+  document.getElementById('count').textContent = doctors.length;
+
+  if (!doctors.length) {
+    container.innerHTML = '';
+    emptyMsg.style.display = 'block';
+    return;
+  }
+
+  emptyMsg.style.display = 'none';
+  container.innerHTML = doctors.map(d => `
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:1rem; padding: 1rem; border-left: 4px solid var(--primary);">
+      <div style="flex:1;">
+        <div style="font-weight:600; font-size:1.05rem;">Dr. ${escapeHtml(d.name)}</div>
+        <div style="font-size:0.85rem; color:var(--primary); font-weight:500;">${d.specialty}</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-top: 2px;">
+          <span style="display:inline-block; margin-right: 10px;">📍 ${escapeHtml(d.city)}</span>
+          <span>🏥 ${escapeHtml(d.hospital)}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-shrink:0;">
+        <button class="btn btn-outline" style="padding:0.3rem 0.6rem;font-size:0.75rem;" onclick="editDoctor(${d.id})">Edit</button>
+        <button class="btn btn-danger" style="padding:0.3rem 0.6rem;font-size:0.75rem;" onclick="deleteDoctor(${d.id})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.toString().replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+  });
+}
+
+async function saveDoctor() {
+  const name = document.getElementById('doc-name').value.trim();
+  const specialty = document.getElementById('doc-specialty').value;
+  const hospital = document.getElementById('doc-hospital').value.trim();
+  const city = document.getElementById('doc-city').value.trim();
+  const phone = document.getElementById('doc-phone').value.trim();
+  const email = document.getElementById('doc-email').value.trim();
+  const editId = document.getElementById('edit-id').value;
+
+  if (!name || !specialty || !hospital || !city || !phone || !email) {
+    showToast('Please fill all fields!','error');
+    return;
+  }
+
+  const payload = { name, specialty, hospital, city, phone, email };
+
+  try {
+    let response;
+    if (editId) {
+      response = await fetch(API + editId + '/', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) {
+        showToast('Doctor profile updated!', 'success');
+        cancelEdit();
+      }
+    } else {
+      response = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) {
+        showToast('Doctor profile added!', 'success');
+        clearForm();
+      }
+    }
+
+    if (response.ok) {
+        loadDoctors();
+    } else {
+        const err = await response.json();
+        showToast(err.error || 'Operation failed', 'error');
+    }
+  } catch (e) {
+    showToast('Network error occurred', 'error');
+  }
+}
+
+async function deleteDoctor(id) {
+  if (!confirm('Are you sure you want to delete this doctor profile?')) return;
+  try {
+    const response = await fetch(API + id + '/', { method: 'DELETE' });
+    if (response.ok) {
+      showToast('Doctor profile deleted', 'success');
+      loadDoctors();
+    } else {
+      showToast('Failed to delete', 'error');
+    }
+  } catch (e) {
+    showToast('Network error occurred', 'error');
+  }
+}
+
+async function editDoctor(id) {
+  try {
+    const response = await fetch(API + id + '/');
+    if (response.ok) {
+      const d = await response.json();
+      document.getElementById('edit-id').value = d.id;
+      document.getElementById('doc-name').value = d.name;
+      document.getElementById('doc-specialty').value = d.specialty;
+      document.getElementById('doc-hospital').value = d.hospital;
+      document.getElementById('doc-city').value = d.city;
+      document.getElementById('doc-phone').value = d.phone;
+      document.getElementById('doc-email').value = d.email;
+
+      document.getElementById('form-title').textContent = 'Edit Doctor Profile';
+      document.getElementById('save-btn').textContent = 'Update Doctor';
+      document.getElementById('cancel-btn').style.display = 'inline-block';
+
+      
+      document.getElementById('form-title').scrollIntoView({ behavior: 'smooth' });
+    }
+  } catch (e) {
+    showToast('Failed to load doctor data', 'error');
+  }
+}
+
+function clearForm() {
+  document.getElementById('doc-name').value = '';
+  document.getElementById('doc-specialty').value = '';
+  document.getElementById('doc-hospital').value = '';
+  document.getElementById('doc-city').value = '';
+  document.getElementById('doc-phone').value = '';
+  document.getElementById('doc-email').value = '';
+}
+
+function cancelEdit() {
+  document.getElementById('edit-id').value = '';
+  clearForm();
+  document.getElementById('form-title').textContent = 'Add New Doctor';
+  document.getElementById('save-btn').textContent = 'Add Doctor';
+  document.getElementById('cancel-btn').style.display = 'none';
+}
+
+loadDoctors();
+</script>
+{% endblock %}

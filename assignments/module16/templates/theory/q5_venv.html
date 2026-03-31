@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Environment & Django Setup</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f7f7;
+      --surface2: #f0f0f0;
+      --border: #e0e0e0;
+      --text: #111111;
+      --muted: #888888;
+      --code-bg: #1a1a1a;
+      --code-border: #2e2e2e;
+      --code-header-bg: #222222;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      margin-bottom: 56px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #111111;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .badge::before {
+      content: '◆';
+      font-size: 8px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: #111111;
+    }
+
+    h1 span {
+      position: relative;
+    }
+
+    h1 span::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #111111;
+      opacity: 0.12;
+      border-radius: 2px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 300;
+      max-width: 520px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, #111111, transparent);
+      margin: 40px 0;
+      opacity: 0.15;
+    }
+
+    .section {
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .section:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .section:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .section:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .section:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #111111;
+    }
+
+    .section-title .icon {
+      width: 32px;
+      height: 32px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    p {
+      color: #555555;
+      margin-bottom: 14px;
+    }
+
+    p strong {
+      color: #111111;
+      font-weight: 600;
+    }
+
+    .info-box {
+      background: #f4f4f4;
+      border: 1px solid #dddddd;
+      border-left: 3px solid #555555;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 14px;
+      color: #444444;
+    }
+
+    .info-box strong {
+      color: #111111;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .why-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .why-card:hover {
+      border-color: #999999;
+      transform: translateY(-2px);
+    }
+
+    .why-card .icon {
+      width: 28px;
+      height: 28px;
+      background: #111111;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .why-card .title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 4px;
+    }
+
+    .why-card .desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .step:hover {
+      border-color: #aaaaaa;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: #111111;
+      opacity: 0.65;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      background: #111111;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111111;
+    }
+
+    .step-desc {
+      font-size: 13.5px;
+      color: #555555;
+      margin-bottom: 12px;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: var(--code-header-bg);
+      border-bottom: 1px solid var(--code-border);
+    }
+
+    .code-header .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .code-header .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-header .dot:nth-child(1) {
+      background: #555555;
+    }
+
+    .code-header .dot:nth-child(2) {
+      background: #777777;
+    }
+
+    .code-header .dot:nth-child(3) {
+      background: #999999;
+    }
+
+    .code-header .lang {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #666666;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    code {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e0e0e0;
+      padding: 16px 18px;
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    code .cmd {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    code .comment {
+      color: #555555;
+    }
+
+    code .str {
+      color: #bbbbbb;
+    }
+
+    code .kw {
+      color: #cccccc;
+    }
+
+    code .path {
+      color: #aaaaaa;
+      font-style: italic;
+    }
+
+    .note {
+      display: flex;
+      gap: 10px;
+      background: #f4f4f4;
+      border: 1px solid #dddddd;
+      border-left: 3px solid #888888;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #444444;
+      margin-top: 10px;
+    }
+
+    .note::before {
+      content: '!';
+      flex-shrink: 0;
+      font-weight: 700;
+      color: #888888;
+    }
+
+    .completed-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #111111;
+      border-radius: 12px;
+      padding: 20px 28px;
+      margin-top: 48px;
+      animation: fadeUp 0.5s 0.4s ease both;
+    }
+
+    .completed-banner .check {
+      width: 36px;
+      height: 36px;
+      background: #ffffff;
+      color: #111111;
+      font-size: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .completed-banner .text strong {
+      display: block;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .completed-banner .text span {
+      font-size: 13px;
+      color: #aaaaaa;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <div class="header">
+      <div class="badge">Django Assignment — Question 5</div>
+      <h1>Virtual <span>Environment</span> &amp;<br>Django Installation</h1>
+      <p class="subtitle">Setting up an isolated Python environment and installing Django the right way.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="icon">VE</div>
+        What is a Virtual Environment?
+      </div>
+      <p>A <strong>virtual environment</strong> is an isolated Python workspace that keeps your project's dependencies
+        completely separate from the global Python installation and from other projects on the same machine.</p>
+      <p>Without it, every package you install goes into the global Python directory — this quickly leads to
+        <strong>version conflicts</strong> when two projects need different versions of the same library.
+      </p>
+
+      <div class="info-box">
+        <strong>Think of it like this:</strong> Each project gets its own room with its own bookshelf. Books (packages)
+        in one room don't interfere with books in another.
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="icon">IS</div>
+          <div class="title">Isolation</div>
+          <div class="desc">Each project has its own set of packages with exact versions.</div>
+        </div>
+        <div class="why-card">
+          <div class="icon">RP</div>
+          <div class="title">Reproducibility</div>
+          <div class="desc">Share requirements.txt so anyone can recreate the same setup.</div>
+        </div>
+        <div class="why-card">
+          <div class="icon">CS</div>
+          <div class="title">Clean System</div>
+          <div class="desc">Global Python stays uncluttered and stable.</div>
+        </div>
+        <div class="why-card">
+          <div class="icon">NC</div>
+          <div class="title">No Conflicts</div>
+          <div class="desc">Project A using Django 4.x and Project B using Django 3.x — no problem.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="icon">SS</div>
+        Step-by-Step Setup Process
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 01</span>
+          <span class="step-title">Check Python Installation</span>
+        </div>
+        <p class="step-desc">Ensure Python 3 is installed on your system before proceeding.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">python --version</span>       <span class="comment"># Windows</span>
+<span class="cmd">python3 --version</span>      <span class="comment"># Linux / macOS</span></code>
+        </div>
+        <div class="note">If Python is not installed, download it from python.org and make sure to check "Add Python to
+          PATH" during installation.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 02</span>
+          <span class="step-title">Create a Project Folder</span>
+        </div>
+        <p class="step-desc">Create a dedicated directory for your Django project.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">mkdir</span> <span class="path">myproject</span>
+<span class="cmd">cd</span> <span class="path">myproject</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 03</span>
+          <span class="step-title">Create the Virtual Environment</span>
+        </div>
+        <p class="step-desc">Use Python's built-in <strong>venv</strong> module to create an isolated environment inside
+          your project folder.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="comment"># Creates a folder named 'venv' with isolated Python</span>
+<span class="cmd">python -m venv</span> <span class="path">venv</span>       <span class="comment"># Windows</span>
+<span class="cmd">python3 -m venv</span> <span class="path">venv</span>      <span class="comment"># Linux / macOS</span></code>
+        </div>
+        <p class="step-desc" style="margin-top:10px;">A folder named <code
+            style="display:inline; padding: 2px 7px; background: #1a1a1a; color:#e0e0e0; border-radius:4px; font-size:12px; font-family:'JetBrains Mono',monospace;">venv/</code>
+          is created containing a private Python binary and pip.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 04</span>
+          <span class="step-title">Activate the Virtual Environment</span>
+        </div>
+        <p class="step-desc">Activating tells your terminal to use the isolated Python instead of the global one.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="comment"># Windows (Command Prompt)</span>
+<span class="path">venv\Scripts\activate</span>
+
+<span class="comment"># Windows (PowerShell)</span>
+<span class="path">venv\Scripts\Activate.ps1</span>
+
+<span class="comment"># Linux / macOS</span>
+<span class="cmd">source</span> <span class="path">venv/bin/activate</span></code>
+        </div>
+        <div class="note">After activation, your terminal prompt will show <strong>(venv)</strong> at the start — this
+          confirms the environment is active.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 05</span>
+          <span class="step-title">Upgrade pip</span>
+        </div>
+        <p class="step-desc">It's good practice to upgrade pip inside the virtual environment before installing
+          packages.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">pip install --upgrade pip</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 06</span>
+          <span class="step-title">Install Django</span>
+        </div>
+        <p class="step-desc">Install Django using pip. Since the virtual environment is active, Django will be installed
+          only inside it.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">pip install django</span>
+
+<span class="comment"># Or install a specific version:</span>
+<span class="cmd">pip install</span> <span class="str">django==4.2</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 07</span>
+          <span class="step-title">Verify Django Installation</span>
+        </div>
+        <p class="step-desc">Confirm that Django was installed correctly.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">python -m django --version</span>
+<span class="comment"># Output: 4.2.x  (or whatever version was installed)</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 08</span>
+          <span class="step-title">Create a Django Project</span>
+        </div>
+        <p class="step-desc">Start a new Django project using the django-admin command.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">django-admin startproject</span> <span class="str">mysite</span> <span class="path">.</span>
+<span class="comment"># The dot (.) creates the project in the current directory</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 09</span>
+          <span class="step-title">Save Dependencies</span>
+        </div>
+        <p class="step-desc">Export all installed packages to a file so the environment can be recreated later.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">pip freeze</span> > <span class="path">requirements.txt</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 10</span>
+          <span class="step-title">Deactivate When Done</span>
+        </div>
+        <p class="step-desc">To exit the virtual environment when you're finished working.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">deactivate</span></code>
+        </div>
+      </div>
+    </div>
+
+    <div class="completed-banner">
+      <div class="check">&#10003;</div>
+      <div class="text">
+        <strong>Requirement Fulfilled</strong>
+        <span>Virtual environment created and Django installed as part of the complete Django project submission.</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

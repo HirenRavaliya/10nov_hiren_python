@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Paytm Payment Gateway{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Paytm Payment Gateway</h1>
+    </div>
+
+  <div class="alert alert-warning"> This is a demonstration/mock integration. For production, obtain real Paytm Merchant credentials and use the official Paytm API SDK (paytmchecksum).</div>
+
+  <div class="grid-2" style="margin-top:1.2rem;">
+    <div class="card">
+      <div class="section-title"> Demo Payment Form</div>
+      <div class="form-group"><label>Order Amount (₹)</label><input id="amount" class="form-control" value="500" type="number"></div>
+      <div class="form-group"><label>Customer Name</label><input id="cust-name" class="form-control" value="John Doe"></div>
+      <div class="form-group"><label>Mobile Number</label><input id="mobile" class="form-control" value="9876543210"></div>
+      <div class="form-group"><label>Email</label><input id="pay-email" class="form-control" value="john@example.com" type="email"></div>
+      <button class="btn btn-primary" style="width:100%;" onclick="mockPayment()">Proceed to Pay via Paytm</button>
+    </div>
+    <div class="card">
+      <div class="section-title"> Implementation Steps</div>
+      <div style="display:flex;flex-direction:column;gap:0.7rem;font-size:0.875rem;">
+        <div style="padding:0.6rem;background:var(--surface2);border-radius:6px;">
+          <strong>1. Install SDK</strong><br><code style="color:var(--secondary);font-size:0.8rem;">pip install paytmchecksum</code>
+        </div>
+        <div style="padding:0.6rem;background:var(--surface2);border-radius:6px;">
+          <strong>2. Add Credentials (settings.py)</strong><br><code style="color:var(--secondary);font-size:0.8rem;">PAYTM_MERCHANT_ID = "YOUR_MID"<br>PAYTM_MERCHANT_KEY = "YOUR_KEY"</code>
+        </div>
+        <div style="padding:0.6rem;background:var(--surface2);border-radius:6px;">
+          <strong>3. Generate Checksum</strong><br><code style="color:var(--secondary);font-size:0.8rem;">checksum = PaytmChecksum.generate(...)</code>
+        </div>
+        <div style="padding:0.6rem;background:var(--surface2);border-radius:6px;">
+          <strong>4. Submit to Paytm</strong><br><code style="color:var(--secondary);font-size:0.8rem;">POST to Paytm Payment URL with params</code>
+        </div>
+        <div style="padding:0.6rem;background:var(--surface2);border-radius:6px;">
+          <strong>5. Handle Callback</strong><br><code style="color:var(--secondary);font-size:0.8rem;">Verify checksum in callback_url view</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="mock-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;align-items:center;justify-content:center;">
+    <div class="card" style="max-width:400px;text-align:center;padding:2.5rem;">
+      <div style="font-size:3rem;margin-bottom:1rem;"></div>
+      <h3 style="margin-bottom:0.5rem;">Payment Successful! (Demo)</h3>
+      <button class="btn btn-primary" onclick="document.getElementById('mock-modal').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function mockPayment() {
+  const amount = document.getElementById('amount').value;
+  document.getElementById('txn-id').textContent = 'PAYTM' + Math.random().toString(36).toUpperCase().slice(2, 12);
+  const modal = document.getElementById('mock-modal');
+  modal.style.display = 'flex';
+  showToast('Payment of ₹' + amount + ' initiated!', 'success');
+}
+</script>
+{% endblock %}

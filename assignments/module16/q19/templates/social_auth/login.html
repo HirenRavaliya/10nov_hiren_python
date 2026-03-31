@@ -1,0 +1,491 @@
+{% extends "social_auth/base.html" %}
+
+{% block title %}Sign In — SecureAuth{% endblock %}
+
+{% block extra_css %}
+<style>
+    
+    .lab-banner {
+        background: var(--black);
+        color: var(--gray-300);
+        padding: .65rem 1.5rem;
+        font-size: .79rem;
+        letter-spacing: .02em;
+    }
+
+    .lab-banner-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .lab-title {
+        color: var(--white);
+        font-weight: 700;
+        white-space: nowrap;
+        padding-top: .05rem;
+    }
+
+    .lab-pills {
+        display: flex;
+        gap: .35rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .lab-pill {
+        padding: .13rem .55rem;
+        border-radius: 4px;
+        font-size: .7rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, .1);
+        border: 1px solid rgba(255, 255, 255, .18);
+        color: #ddd;
+    }
+
+    .lab-desc {
+        flex-basis: 100%;
+        font-size: .77rem;
+        line-height: 1.5;
+        margin-top: .18rem;
+    }
+
+    .lab-desc strong {
+        color: var(--white);
+    }
+
+    
+    .page-wrap {
+        min-height: calc(100vh - 128px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 720px) {
+        .page-wrap {
+            grid-template-columns: 1fr;
+        }
+
+        .left-panel {
+            display: none;
+        }
+    }
+
+    
+    .left-panel {
+        background: var(--black);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .left-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 255, 255, .04) 39px, rgba(255, 255, 255, .04) 40px),
+            repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, .04) 39px, rgba(255, 255, 255, .04) 40px);
+    }
+
+    .panel-content {
+        position: relative;
+        z-index: 1;
+        max-width: 360px;
+        text-align: center;
+    }
+
+    .panel-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid rgba(255, 255, 255, .14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 2rem;
+    }
+
+    .panel-content h2 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 2rem;
+        color: var(--white);
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .panel-content h2 em {
+        font-style: italic;
+        color: var(--gray-300);
+    }
+
+    .panel-content p {
+        color: var(--gray-400);
+        font-size: .92rem;
+        line-height: 1.65;
+        margin-bottom: 2rem;
+    }
+
+    .feature-list {
+        list-style: none;
+        text-align: left;
+    }
+
+    .feature-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: .7rem;
+        padding: .55rem 0;
+        border-top: 1px solid rgba(255, 255, 255, .07);
+        font-size: .86rem;
+        color: var(--gray-300);
+        line-height: 1.4;
+    }
+
+    .feature-list li:first-child {
+        border-top: none;
+    }
+
+    .feat-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, .08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .85rem;
+        flex-shrink: 0;
+    }
+
+    
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem 2rem;
+        background: var(--white);
+    }
+
+    .login-box {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .login-box h1 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.85rem;
+        color: var(--black);
+        margin-bottom: .35rem;
+        line-height: 1.2;
+    }
+
+    .login-box .subtitle {
+        color: var(--gray-500);
+        font-size: .88rem;
+        margin-bottom: 2.2rem;
+    }
+
+    
+    .oauth-btn {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        width: 100%;
+        padding: .85rem 1.25rem;
+        border-radius: 10px;
+        border: 1.5px solid var(--gray-200);
+        background: var(--white);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .94rem;
+        font-weight: 600;
+        color: var(--black);
+        cursor: pointer;
+        text-decoration: none;
+        transition: border-color .2s, background .2s, box-shadow .2s, transform .15s;
+        margin-bottom: .85rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .oauth-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--gray-50);
+        opacity: 0;
+        transition: opacity .15s;
+    }
+
+    .oauth-btn:hover::before {
+        opacity: 1;
+    }
+
+    .oauth-btn:hover {
+        border-color: var(--gray-400);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+    }
+
+    .oauth-btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    .oauth-btn .btn-logo {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .oauth-btn span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .oauth-btn .btn-arrow {
+        margin-left: auto;
+        color: var(--gray-300);
+        position: relative;
+        z-index: 1;
+        font-size: 1rem;
+        transition: transform .2s, color .2s;
+    }
+
+    .oauth-btn:hover .btn-arrow {
+        transform: translateX(3px);
+        color: var(--gray-500);
+    }
+
+    
+    .oauth-btn.google {
+        border-left: 3px solid #4285F4;
+    }
+
+    .oauth-btn.facebook {
+        border-left: 3px solid #1877F2;
+    }
+
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin: .5rem 0 1.5rem;
+        color: var(--gray-300);
+        font-size: .78rem;
+        letter-spacing: .06em;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--gray-200);
+    }
+
+    
+    .how-it-works {
+        margin-top: 1.8rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .how-it-works h3 {
+        font-size: .72rem;
+        font-weight: 700;
+        color: var(--gray-400);
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        margin-bottom: .9rem;
+    }
+
+    .steps-row {
+        display: flex;
+        gap: .6rem;
+    }
+
+    .step-box {
+        flex: 1;
+        padding: .7rem .6rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--gray-50);
+        text-align: center;
+    }
+
+    .step-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--black);
+        color: var(--white);
+        font-size: .7rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto .45rem;
+    }
+
+    .step-box p {
+        font-size: .74rem;
+        color: var(--gray-500);
+        line-height: 1.4;
+    }
+
+    
+    .disclaimer {
+        margin-top: 1.5rem;
+        font-size: .74rem;
+        color: var(--gray-400);
+        text-align: center;
+        line-height: 1.5;
+    }
+
+    .disclaimer a {
+        color: var(--gray-500);
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="lab-banner">
+    <div class="lab-banner-inner">
+        <span class="lab-title">📋 Lab #19</span>
+        <div>
+            <div class="lab-pills">
+                <span class="lab-pill">MCA — Online</span>
+                <span class="lab-pill">Python/Django</span>
+                <span class="lab-pill">OAuth 2.0</span>
+                <span class="lab-pill">django-allauth</span>
+                <span class="lab-pill">Social Login</span>
+            </div>
+            <div class="lab-desc">
+                <strong>Requirement:</strong>
+                Write a Django project to allow users to log in using
+                <strong>Google</strong> or <strong>Facebook</strong> —
+                demonstrating social OAuth 2.0 integration via django-allauth.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="page-wrap">
+
+
+    <div class="left-panel">
+        <div class="panel-content">
+            <div class="panel-icon">🔐</div>
+            <h2>One click.<br><em>Instant access.</em></h2>
+            <p>Sign in with your existing Google or Facebook account. No new password to remember, no lengthy forms.</p>
+
+            <ul class="feature-list">
+                <li>
+                    <span class="feat-icon">🛡️</span>
+                    <span>Secured by <strong>OAuth 2.0</strong> — your credentials never touch our server</span>
+                </li>
+                <li>
+                    <span class="feat-icon">⚡</span>
+                    <span>Instant login — no email verification needed</span>
+                </li>
+                <li>
+                    <span class="feat-icon">🔗</span>
+                    <span>Link multiple social accounts to one profile</span>
+                </li>
+                <li>
+                    <span class="feat-icon">🧩</span>
+                    <span>Powered by <strong>django-allauth</strong>, the industry standard</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="right-panel">
+        <div class="login-box">
+            <h1>Sign in to<br>SecureAuth</h1>
+            <p class="subtitle">Choose a provider to continue — it takes one click.</p>
+
+
+            <a href="{% url 'google_login' %}" class="oauth-btn google">
+
+                <svg class="btn-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        fill="#4285F4" />
+                    <path
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        fill="#34A853" />
+                    <path
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        fill="#FBBC05" />
+                    <path
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        fill="#EA4335" />
+                </svg>
+                <span>Continue with Google</span>
+                <span class="btn-arrow">›</span>
+            </a>
+
+            <div class="divider">or</div>
+
+
+            <a href="{% url 'facebook_login' %}" class="oauth-btn facebook">
+
+                <svg class="btn-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                        fill="#1877F2" />
+                </svg>
+                <span>Continue with Facebook</span>
+                <span class="btn-arrow">›</span>
+            </a>
+
+
+            <div class="how-it-works">
+                <h3>How it works</h3>
+                <div class="steps-row">
+                    <div class="step-box">
+                        <div class="step-num">1</div>
+                        <p>Click a provider above</p>
+                    </div>
+                    <div class="step-box">
+                        <div class="step-num">2</div>
+                        <p>Approve access on provider's page</p>
+                    </div>
+                    <div class="step-box">
+                        <div class="step-num">3</div>
+                        <p>Redirected to your dashboard</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="disclaimer">
+                By signing in you agree to our
+                <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.<br>
+                We only request your name and email — nothing else.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

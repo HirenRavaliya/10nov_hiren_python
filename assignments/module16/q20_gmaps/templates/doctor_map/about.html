@@ -1,0 +1,273 @@
+{% extends "doctor_map/base.html" %}
+{% block title %}About — DoctorMap{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* HEADER */
+  .page-header {
+    background: var(--black);
+    color: var(--white);
+    padding: 3rem 1.5rem 2.5rem;
+    text-align: center;
+  }
+  .page-header h1 { font-family:'DM Serif Display',serif; font-size:2.1rem; margin-bottom:.4rem; }
+  .page-header p  { color: var(--gray-300); font-size:.95rem; max-width:520px; margin:0 auto; }
+
+  /* LAB BANNER */
+  .lab-banner {
+    background: var(--black); color: var(--gray-300);
+    padding: .6rem 1.5rem; font-size: .79rem;
+  }
+  .lab-inner { max-width:1100px; margin:0 auto; display:flex; gap:1rem; align-items:flex-start; flex-wrap:wrap; }
+  .lab-title { color:var(--white); font-weight:700; white-space:nowrap; padding-top:.05rem; }
+  .lab-pills { display:flex; gap:.35rem; flex-wrap:wrap; align-items:center; }
+  .lab-pill  { padding:.12rem .52rem; border-radius:4px; font-size:.7rem; font-weight:600;
+               background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:#ddd; }
+  .lab-desc  { flex-basis:100%; font-size:.76rem; line-height:1.5; margin-top:.15rem; }
+  .lab-desc strong { color:var(--white); }
+
+  /* BODY */
+  .about-body { padding: 3rem 0 4rem; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
+
+  .acard {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .acard h3 {
+    font-family:'DM Serif Display',serif;
+    font-size: 1.05rem;
+    margin-bottom: .85rem;
+    padding-bottom: .55rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* URL table */
+  .url-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  .url-table th {
+    text-align: left; padding: .4rem .5rem;
+    font-size: .72rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .05em;
+    border-bottom: 2px solid var(--border);
+  }
+  .url-table td { padding: .55rem .5rem; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  .url-table tr:last-child td { border-bottom: none; }
+
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: .8rem;
+    background: var(--gray-100);
+    padding: .1rem .35rem;
+    border-radius: 4px;
+    color: var(--black);
+  }
+
+  /* flow steps */
+  .flow { list-style: none; }
+  .flow li {
+    display: flex; gap: .7rem; align-items: flex-start;
+    padding: .6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .86rem; line-height: 1.5; color: var(--gray-700);
+  }
+  .flow li:last-child { border-bottom: none; }
+  .flow-n {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--black); color: var(--white);
+    font-size: .7rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: .12rem;
+  }
+
+  /* stats */
+  .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .stat-box {
+    flex: 1; min-width: 110px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.1rem 1rem; text-align: center;
+  }
+  .stat-v { font-family:'DM Serif Display',serif; font-size: 1.9rem; color: var(--black); }
+  .stat-l { font-size: .77rem; color: var(--muted); margin-top: .2rem; }
+
+  /* dark full-width card */
+  .dark-card {
+    background: var(--black); color: var(--gray-300);
+    border-radius: 14px; padding: 2rem;
+    margin-top: 2rem;
+  }
+  .dark-card h2 {
+    font-family:'DM Serif Display',serif; color: var(--white);
+    font-size: 1.3rem; margin-bottom: .6rem;
+  }
+  .dark-card p { font-size: .88rem; line-height: 1.65; }
+  .dark-card .btn { margin-top: 1.2rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- LAB BANNER -->
+<div class="lab-banner">
+  <div class="lab-inner">
+    <span class="lab-title">📋 Lab #20</span>
+    <div>
+      <div class="lab-pills">
+        <span class="lab-pill">MCA — Online</span>
+        <span class="lab-pill">Python/Django</span>
+        <span class="lab-pill">Google Maps JavaScript API</span>
+        <span class="lab-pill">Standalone App</span>
+      </div>
+      <div class="lab-desc">
+        <strong>Requirement:</strong>
+        Write a Django project to display doctor locations using
+        <strong>Google Maps API</strong> — demonstrating map initialisation,
+        custom markers, info windows, and URL routing.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <h1>About DoctorMap</h1>
+  <p>A standalone Django app demonstrating Google Maps API integration — Lab #20.</p>
+</div>
+
+<!-- BODY -->
+<div class="container about-body">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-v">{{ total_doctors }}</div>
+      <div class="stat-l">Doctors on Map</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-v">{{ cities|length }}</div>
+      <div class="stat-l">Cities Covered</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-v">{{ specialties|length }}</div>
+      <div class="stat-l">Specialties</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-v">3</div>
+      <div class="stat-l">URL Routes</div>
+    </div>
+  </div>
+
+  <!-- CARDS GRID -->
+  <div class="about-grid" style="margin-top:2rem;">
+
+    <!-- URL Routing -->
+    <div class="acard">
+      <h3>URL Routing (app_name = <code>doctor_map</code>)</h3>
+      <table class="url-table">
+        <thead>
+          <tr>
+            <th>URL</th>
+            <th>View</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/map/</code></td>
+            <td><code>map_home()</code></td>
+            <td><code>map_home</code></td>
+          </tr>
+          <tr>
+            <td><code>/map/doctor/&lt;id&gt;/</code></td>
+            <td><code>doctor_detail()</code></td>
+            <td><code>doctor_detail</code></td>
+          </tr>
+          <tr>
+            <td><code>/map/about/</code></td>
+            <td><code>about()</code></td>
+            <td><code>about</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Cities -->
+    <div class="acard">
+      <h3>Cities Covered</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+        {% for city in cities %}
+          <span class="badge badge-gray">📍 {{ city }}</span>
+        {% endfor %}
+      </div>
+      <div style="margin-top:1rem;">
+        <h3 style="font-size:.9rem;margin-bottom:.6rem;border:none;padding:0;font-family:'DM Sans',sans-serif;font-weight:700;color:var(--muted);">SPECIALTIES</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+          {% for s in specialties %}
+            <span class="badge badge-dark">{{ s }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- How Google Maps Works -->
+    <div class="acard" style="grid-column: 1 / -1;">
+      <h3>How Google Maps API Works in This App</h3>
+      <ol class="flow">
+        <li>
+          <span class="flow-n">1</span>
+          <span><strong>Settings:</strong> <code>GOOGLE_MAPS_API_KEY</code> is stored in <code>settings.py</code> and passed to templates via the view's context dictionary.</span>
+        </li>
+        <li>
+          <span class="flow-n">2</span>
+          <span><strong>Data serialisation:</strong> Django's template engine serialises the <code>DOCTORS</code> list (including <code>lat</code>/<code>lng</code>) into a JavaScript array using <code>{% verbatim %}{% for doc in doctors %}{% endverbatim %}</code> loops.</span>
+        </li>
+        <li>
+          <span class="flow-n">3</span>
+          <span><strong>Async load:</strong> The Maps JS API is loaded with <code>callback=initMap&loading=async</code> — the browser fetches the script without blocking the page.</span>
+        </li>
+        <li>
+          <span class="flow-n">4</span>
+          <span><strong>Map init:</strong> <code>initMap()</code> creates a <code>google.maps.Map</code> centred on Gujarat, applies a monochrome style, then loops <code>DOCTORS</code> to place a <code>google.maps.Marker</code> at each clinic's coordinates.</span>
+        </li>
+        <li>
+          <span class="flow-n">5</span>
+          <span><strong>Info Windows:</strong> Each marker gets a <code>google.maps.InfoWindow</code> containing the doctor's name, address, timings, phone, and action buttons — opening on marker click.</span>
+        </li>
+        <li>
+          <span class="flow-n">6</span>
+          <span><strong>Specialty filter:</strong> Sidebar chips call <code>marker.setVisible(true/false)</code> to show/hide markers without reloading the page, keeping the map interactive.</span>
+        </li>
+        <li>
+          <span class="flow-n">7</span>
+          <span><strong>Detail page mini-map:</strong> <code>doctor_detail</code> view passes a single doctor's <code>lat/lng</code> to a second smaller map instance, demonstrating reuse of the same API across multiple URL routes.</span>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="dark-card">
+    <h2>🗺️ Ready to explore?</h2>
+    <p>
+      Head to the Live Map to see all {{ total_doctors }} doctor clinic locations plotted across
+      Gujarat — with clickable markers, info windows, and specialty filtering.
+    </p>
+    <a href="{% url 'doctor_map:map_home' %}" class="btn btn-outline"
+       style="border-color:rgba(255,255,255,.3);color:var(--white);">
+      Open Live Map →
+    </a>
+  </div>
+
+</div>
+
+{% endblock %}

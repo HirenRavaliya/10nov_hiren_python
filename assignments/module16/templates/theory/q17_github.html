@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Version Control & Django Upload</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f7f7;
+      --surface2: #f0f0f0;
+      --border: #e0e0e0;
+      --text: #111111;
+      --muted: #888888;
+      --code-bg: #1a1a1a;
+      --code-border: #2e2e2e;
+      --code-header-bg: #222222;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      margin-bottom: 56px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #111111;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .badge::before {
+      content: '◆';
+      font-size: 8px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: #111111;
+    }
+
+    h1 span {
+      position: relative;
+    }
+
+    h1 span::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #111111;
+      opacity: 0.12;
+      border-radius: 2px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 300;
+      max-width: 520px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, #111111, transparent);
+      margin: 40px 0;
+      opacity: 0.15;
+    }
+
+    .section {
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .section:nth-child(2) {
+      animation-delay: 0.08s;
+    }
+
+    .section:nth-child(3) {
+      animation-delay: 0.14s;
+    }
+
+    .section:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .section:nth-child(5) {
+      animation-delay: 0.26s;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #111111;
+    }
+
+    .section-title .icon {
+      width: 32px;
+      height: 32px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    p {
+      color: #555555;
+      margin-bottom: 14px;
+    }
+
+    p strong {
+      color: #111111;
+      font-weight: 600;
+    }
+
+    .info-box {
+      background: #f4f4f4;
+      border: 1px solid #dddddd;
+      border-left: 3px solid #555555;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 14px;
+      color: #444444;
+    }
+
+    .info-box strong {
+      color: #111111;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .concept-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .concept-card:hover {
+      border-color: #999999;
+      transform: translateY(-2px);
+    }
+
+    .concept-card .ci {
+      width: 28px;
+      height: 28px;
+      background: #111111;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .concept-card .ct {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 5px;
+    }
+
+    .concept-card .cd {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 20px 0;
+    }
+
+    .flow-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flow-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #444444;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .flow-box.active {
+      background: #111111;
+      border-color: #111111;
+      color: #ffffff;
+    }
+
+    .flow-arrow {
+      font-size: 18px;
+      color: var(--muted);
+      padding: 0 4px;
+      align-self: center;
+      margin-bottom: 26px;
+    }
+
+    .flow-label {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .step:hover {
+      border-color: #aaaaaa;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: #111111;
+      opacity: 0.65;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      background: #111111;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111111;
+    }
+
+    .step-desc {
+      font-size: 13.5px;
+      color: #555555;
+      margin-bottom: 12px;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: var(--code-header-bg);
+      border-bottom: 1px solid var(--code-border);
+    }
+
+    .code-header .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .code-header .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-header .dot:nth-child(1) {
+      background: #555555;
+    }
+
+    .code-header .dot:nth-child(2) {
+      background: #777777;
+    }
+
+    .code-header .dot:nth-child(3) {
+      background: #999999;
+    }
+
+    .code-header .lang {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #666666;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    code {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e0e0e0;
+      padding: 16px 18px;
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    code .cmd {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    code .comment {
+      color: #555555;
+    }
+
+    code .str {
+      color: #bbbbbb;
+    }
+
+    code .kw {
+      color: #cccccc;
+    }
+
+    code .path {
+      color: #aaaaaa;
+      font-style: italic;
+    }
+
+    .note {
+      display: flex;
+      gap: 10px;
+      background: #f4f4f4;
+      border: 1px solid #dddddd;
+      border-left: 3px solid #888888;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #444444;
+      margin-top: 10px;
+    }
+
+    .note::before {
+      content: '!';
+      flex-shrink: 0;
+      font-weight: 700;
+      color: #888888;
+    }
+
+    
+    .gitignore-box {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .gitignore-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 14px;
+      background: var(--code-header-bg);
+      border-bottom: 1px solid var(--code-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #aaaaaa;
+      letter-spacing: 0.05em;
+    }
+
+    .gitignore-content {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      padding: 14px 18px;
+      color: #aaaaaa;
+      line-height: 1.7;
+    }
+
+    .gitignore-content .gi-comment {
+      color: #555555;
+    }
+
+    .gitignore-content .gi-path {
+      color: #dddddd;
+    }
+
+    .completed-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #111111;
+      border-radius: 12px;
+      padding: 20px 28px;
+      margin-top: 48px;
+      animation: fadeUp 0.5s 0.4s ease both;
+    }
+
+    .completed-banner .check {
+      width: 36px;
+      height: 36px;
+      background: #ffffff;
+      color: #111111;
+      font-size: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .completed-banner .text strong {
+      display: block;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .completed-banner .text span {
+      font-size: 13px;
+      color: #aaaaaa;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <div class="header">
+      <div class="badge">Django Assignment — Question 17</div>
+      <h1>GitHub for <span>Version Control</span><br>&amp; Project Upload</h1>
+      <p class="subtitle">Understanding Git version control and pushing a Django project to GitHub.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="icon">GH</div>
+        What is GitHub &amp; Version Control?
+      </div>
+      <p><strong>Version Control</strong> is a system that records changes to files over time so you can recall specific
+        versions later, collaborate with others, and track who changed what and when.</p>
+      <p><strong>Git</strong> is the most widely used version control system. <strong>GitHub</strong> is a cloud-based
+        hosting platform for Git repositories — it lets you store your code online, collaborate, and manage project
+        history through a web interface.</p>
+
+      <div class="info-box">
+        <strong>Why GitHub for Django projects?</strong> It keeps your code safe in the cloud, lets teammates
+        collaborate without overwriting each other's work, and acts as a portfolio for your projects.
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="ci">RE</div>
+          <div class="ct">Repository (Repo)</div>
+          <div class="cd">A folder tracked by Git — contains all your project files and the full history of changes.
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="ci">CM</div>
+          <div class="ct">Commit</div>
+          <div class="cd">A snapshot of your project at a given point in time. Each commit has a unique ID and message.
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="ci">BR</div>
+          <div class="ct">Branch</div>
+          <div class="cd">A parallel version of your project. Work on features without touching the main stable code.
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="ci">PP</div>
+          <div class="ct">Push / Pull</div>
+          <div class="cd">Push = upload local commits to GitHub. Pull = download remote changes to your local machine.
+          </div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-box">Working Directory</div>
+          <div class="flow-label">your files</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-item">
+          <div class="flow-box">Staging Area</div>
+          <div class="flow-label">git add</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-item">
+          <div class="flow-box">Local Repo</div>
+          <div class="flow-label">git commit</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-item">
+          <div class="flow-box active">GitHub (Remote)</div>
+          <div class="flow-label">git push</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="icon">SS</div>
+        Step-by-Step: Upload Django Project to GitHub
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 01</span>
+          <span class="step-title">Install Git</span>
+        </div>
+        <p class="step-desc">Ensure Git is installed on your machine.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git --version</span>
+<span class="comment"># If not installed: https://git-scm.com/downloads</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 02</span>
+          <span class="step-title">Configure Git Identity</span>
+        </div>
+        <p class="step-desc">Set your name and email — this info is attached to every commit you make.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git config --global</span> user.name <span class="str">"Your Name"</span>
+<span class="cmd">git config --global</span> user.email <span class="str">"you@example.com"</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 03</span>
+          <span class="step-title">Create a .gitignore File</span>
+        </div>
+        <p class="step-desc">Before initializing Git, create a <strong>.gitignore</strong> file to exclude files that
+          should NOT be tracked (virtual environment, database, secrets, etc.).</p>
+        <div class="gitignore-box">
+          <div class="gitignore-header">.gitignore</div>
+          <div class="gitignore-content">
+            <span class="gi-comment"># Virtual Environment</span>
+            <span class="gi-path">venv/</span>
+            <span class="gi-path">env/</span>
+
+            <span class="gi-comment"># Python cache</span>
+            <span class="gi-path">__pycache__/</span>
+            <span class="gi-path">*.pyc</span>
+            <span class="gi-path">*.pyo</span>
+
+            <span class="gi-comment"># Django</span>
+            <span class="gi-path">*.sqlite3</span>
+            <span class="gi-path">media/</span>
+            <span class="gi-path">staticfiles/</span>
+
+            <span class="gi-comment"># Environment variables / secrets</span>
+            <span class="gi-path">.env</span>
+
+            <span class="gi-comment"># IDE files</span>
+            <span class="gi-path">.vscode/</span>
+            <span class="gi-path">.idea/</span>
+          </div>
+        </div>
+        <div class="note">Never upload your virtual environment folder or .env secrets to GitHub — this is a critical
+          security and size consideration.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 04</span>
+          <span class="step-title">Initialize Git in Project Folder</span>
+        </div>
+        <p class="step-desc">Navigate to your Django project folder and initialize a Git repository.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">cd</span> <span class="path">myproject</span>          <span class="comment"># go to your project folder</span>
+<span class="cmd">git init</span>               <span class="comment"># initializes an empty git repo</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 05</span>
+          <span class="step-title">Stage All Project Files</span>
+        </div>
+        <p class="step-desc">Add all files to the staging area (files listed in .gitignore will be excluded
+          automatically).</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git add</span> <span class="path">.</span>              <span class="comment"># stages all files for the first commit</span>
+<span class="cmd">git status</span>             <span class="comment"># verify what will be committed</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 06</span>
+          <span class="step-title">Create the First Commit</span>
+        </div>
+        <p class="step-desc">Commit the staged files with a descriptive message.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git commit -m</span> <span class="str">"Initial commit: Django project setup"</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 07</span>
+          <span class="step-title">Create a Repository on GitHub</span>
+        </div>
+        <p class="step-desc">Go to <strong>github.com</strong>, click <strong>New Repository</strong>, give it a name
+          (e.g., <em>django-project</em>), set it to Public or Private, and click <strong>Create repository</strong>. Do
+          not initialize with a README (since you already have local files).</p>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 08</span>
+          <span class="step-title">Link Local Repo to GitHub Remote</span>
+        </div>
+        <p class="step-desc">Connect your local repository to the GitHub repository you just created.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git remote add origin</span> <span class="str">https://github.com/username/django-project.git</span>
+<span class="comment"># Replace 'username' and 'django-project' with your actual values</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 09</span>
+          <span class="step-title">Rename Branch to 'main' (Optional but Recommended)</span>
+        </div>
+        <p class="step-desc">GitHub defaults to 'main' as the primary branch name.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git branch -M</span> <span class="kw">main</span></code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 10</span>
+          <span class="step-title">Push Project to GitHub</span>
+        </div>
+        <p class="step-desc">Upload your committed code to GitHub. The <strong>-u</strong> flag sets the upstream, so
+          future pushes only need <code
+            style="display:inline; padding: 2px 7px; background: #1a1a1a; color:#e0e0e0; border-radius:4px; font-size:12px; font-family:'JetBrains Mono',monospace;">git push</code>.
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git push -u origin</span> <span class="kw">main</span>
+<span class="comment"># Enter your GitHub username and personal access token when prompted</span></code>
+        </div>
+        <div class="note">GitHub no longer accepts passwords — use a Personal Access Token (PAT). Generate one at:
+          GitHub &rarr; Settings &rarr; Developer Settings &rarr; Personal Access Tokens.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">STEP 11</span>
+          <span class="step-title">Subsequent Updates</span>
+        </div>
+        <p class="step-desc">After making changes to your Django project, use these three commands to push updates to
+          GitHub.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><span
+              class="lang">Terminal</span>
+          </div>
+          <code><span class="cmd">git add</span> <span class="path">.</span>                           <span class="comment"># stage changes</span>
+<span class="cmd">git commit -m</span> <span class="str">"feat: added user login view"</span>  <span class="comment"># commit</span>
+<span class="cmd">git push</span>                           <span class="comment"># push to GitHub</span></code>
+        </div>
+      </div>
+    </div>
+
+    <div class="completed-banner">
+      <div class="check">&#10003;</div>
+      <div class="text">
+        <strong>Requirement Fulfilled</strong>
+        <span>Django project uploaded to GitHub with version control as part of the complete Django project
+          submission.</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

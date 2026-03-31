@@ -1,0 +1,7 @@
+{% extends "social_auth/base.html" %}
+
+{% block content %}
+<script>window.location.href = "{% url 'social_auth:login' %}";</script>
+<meta http-equiv="refresh" content="0; url={% url 'social_auth:login' %}">
+<div style="text-align:center;padding:3rem;color:#777;">Redirecting to login…</div>
+{% endblock %}

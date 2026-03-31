@@ -1,0 +1,417 @@
+{% extends "doctor_finder/base.html" %}
+
+{% block title %}DoctorFinder — Find Your Doctor{% endblock %}
+
+{% block extra_css %}
+<style>
+  
+  .lab-banner {
+    background: var(--black);
+    color: var(--gray-300);
+    padding: .7rem 1.5rem;
+    font-size: .8rem;
+    letter-spacing: .02em;
+  }
+
+  .lab-banner-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .lab-banner-title {
+    color: var(--white);
+    font-weight: 700;
+    white-space: nowrap;
+    padding-top: .05rem;
+  }
+
+  .lab-banner-pills {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .lab-pill {
+    display: inline-block;
+    padding: .15rem .6rem;
+    border-radius: 4px;
+    font-size: .72rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .18);
+    color: #e0e0e0;
+  }
+
+  .lab-req-text {
+    color: var(--gray-400);
+    font-size: .78rem;
+    margin-top: .2rem;
+    flex-basis: 100%;
+    line-height: 1.5;
+  }
+
+  
+  .hero {
+    background: var(--black);
+    color: var(--white);
+    padding: 4rem 1.5rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+        transparent,
+        transparent 39px,
+        rgba(255, 255, 255, .04) 39px,
+        rgba(255, 255, 255, .04) 40px),
+      repeating-linear-gradient(90deg,
+        transparent,
+        transparent 39px,
+        rgba(255, 255, 255, .04) 39px,
+        rgba(255, 255, 255, .04) 40px);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(255, 255, 255, .18);
+    padding: .28rem .9rem;
+    border-radius: 99px;
+    font-size: .78rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    color: var(--gray-300);
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.15;
+    margin-bottom: .8rem;
+    position: relative;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gray-300);
+  }
+
+  .hero p {
+    font-size: 1rem;
+    color: var(--gray-300);
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+
+  
+  .search-form {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 660px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .search-form input,
+  .search-form select {
+    flex: 1;
+    min-width: 200px;
+    padding: .75rem 1.1rem;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    font-size: .92rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--black);
+    outline: none;
+    background: var(--white);
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .search-form input:focus,
+  .search-form select:focus {
+    border-color: var(--gray-500);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .08);
+  }
+
+  .search-form button {
+    padding: .75rem 1.6rem;
+    background: var(--white);
+    color: var(--black);
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .92rem;
+    transition: background .2s, transform .15s;
+  }
+
+  .search-form button:hover {
+    background: var(--gray-100);
+    transform: translateY(-1px);
+  }
+
+  
+  .stats-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: .75rem 1.5rem;
+  }
+
+  .stats-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    font-size: .85rem;
+    color: var(--muted);
+  }
+
+  .stat-item strong {
+    color: var(--black);
+    font-size: 1rem;
+  }
+
+  .clear-link {
+    margin-left: auto;
+    color: #cc2222;
+    font-size: .83rem;
+    font-weight: 500;
+  }
+
+  .clear-link:hover {
+    text-decoration: underline;
+  }
+
+  
+  .section {
+    padding: 2.5rem 0 3.5rem;
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.45rem;
+    margin-bottom: 1.5rem;
+    color: var(--black);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+
+  
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .1);
+  }
+
+  .card-top {
+    padding: 1.3rem 1.3rem .9rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    flex-shrink: 0;
+    background: var(--black);
+  }
+
+  .card-meta h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: .15rem;
+  }
+
+  .card-meta .specialty {
+    font-size: .83rem;
+    color: var(--gray-500);
+    font-weight: 500;
+  }
+
+  .card-info {
+    padding: 0 1.3rem .9rem;
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+  }
+
+  .card-footer {
+    padding: .9rem 1.3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rating {
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--black);
+  }
+
+  
+  .empty {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--muted);
+  }
+
+  .empty svg {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    opacity: .25;
+    display: block;
+  }
+
+  .empty h3 {
+    font-size: 1.15rem;
+    margin-bottom: .4rem;
+    color: var(--black);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="lab-banner">
+  <div class="lab-banner-inner">
+    <span class="lab-banner-title">📋 Lab #9</span>
+    <div>
+      <div class="lab-banner-pills">
+
+        <span class="lab-pill">Python/Django</span>
+        <span class="lab-pill">URL Routing</span>
+        <span class="lab-pill">Views &amp; Templates</span>
+      </div>
+      <div class="lab-req-text">
+        <strong style="color:#fff;">Requirement:</strong>
+        Write a Django project where URL routing is used to navigate between different pages of a "Doctor Finder" site
+        <strong style="color:#fff;">(Home, Profile, Contact)</strong> — demonstrating URL patterns, corresponding view
+        functions, and HTML templates.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="hero">
+  <div class="hero-tag">Gujarat's Trusted Health Network</div>
+  <h1>Find the <em>Right Doctor</em>,<br>Right Now.</h1>
+  <p>Browse verified specialists across Gujarat. Book appointments instantly — no waiting, no hassle.</p>
+
+  <form class="search-form" method="get" action="{% url 'doctor_finder:home' %}">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by name, specialty, city…" autocomplete="off" />
+    <select name="specialty">
+      <option value="">All Specialties</option>
+      {% for s in specialties %}
+      <option value="{{ s }}" {% if s == selected_specialty %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+  </form>
+</section>
+
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item"><strong>{{ total_doctors }}</strong> Doctors registered</div>
+    <div class="stat-item">Showing <strong>{{ doctors|length }}</strong> result{{ doctors|length|pluralize }}</div>
+    {% if query or selected_specialty %}
+    <a href="{% url 'doctor_finder:home' %}" class="clear-link">✕ Clear filters</a>
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="container">
+  <section class="section">
+    <h2 class="section-heading">
+      {% if query %}Results for "{{ query }}"{% elif selected_specialty %}{{ selected_specialty }}s{% else %}All
+      Doctors{% endif %}
+    </h2>
+
+    {% if doctors %}
+    <div class="grid">
+      {% for doc in doctors %}
+      <article class="card">
+        <div class="card-top">
+          <div class="avatar">{{ doc.image_placeholder }}</div>
+          <div class="card-meta">
+            <h3>{{ doc.name }}</h3>
+            <div class="specialty">{{ doc.specialty }}</div>
+          </div>
+        </div>
+
+        <div class="card-info">
+          <span class="badge badge-gray">{{ doc.experience }}</span>
+          <span class="badge {% if doc.available %}badge-green{% else %}badge-red{% endif %}">
+            {% if doc.available %}Available{% else %}Unavailable{% endif %}
+          </span>
+          <span class="badge badge-gray">{{ doc.location }}</span>
+        </div>
+
+        <div class="card-footer">
+          <div class="rating">&#9733; {{ doc.rating }} / 5.0</div>
+          <a href="{% url 'doctor_finder:profile' doc.id %}" class="btn btn-primary">View Profile</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+      </svg>
+      <h3>No doctors found</h3>
+      <p>Try a different name, specialty or city.</p>
+    </div>
+    {% endif %}
+  </section>
+</div>
+
+{% endblock %}

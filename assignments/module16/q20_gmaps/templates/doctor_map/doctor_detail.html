@@ -1,0 +1,411 @@
+{% extends "doctor_map/base.html" %}
+
+{% block title %}{{ doctor.name }} — DoctorMap{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: .65rem 1.5rem;
+    font-size: .82rem;
+    color: var(--muted);
+  }
+
+  .breadcrumb a { color: var(--black); font-weight: 500; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb sep { margin: 0 .4rem; color: var(--gray-300); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--black);
+    color: var(--white);
+    padding: 2.2rem 0;
+  }
+
+  .hero-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+  }
+
+  .avatar {
+    width: 90px; height: 90px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+
+  .hero-meta h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: .25rem;
+    line-height: 1.15;
+  }
+
+  .hero-spec { color: rgba(255,255,255,.6); font-size: .95rem; margin-bottom: .7rem; }
+
+  .hero-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .9rem; }
+
+  .htag {
+    padding: .18rem .6rem;
+    border-radius: 99px;
+    font-size: .73rem; font-weight: 600;
+  }
+
+  .htag-white { background: rgba(255,255,255,.1); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.14); }
+  .htag-green { background: #143d22; color: #4ade80; border: 1px solid #1e5c33; }
+  .htag-red   { background: #3d1414; color: #f87171; border: 1px solid #5c1e1e; }
+
+  .stat-chips { display: flex; gap: .9rem; flex-wrap: wrap; }
+
+  .chip {
+    text-align: center;
+    padding: .5rem .85rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.1);
+    min-width: 72px;
+  }
+
+  .chip-val { font-size: 1.05rem; font-weight: 700; }
+  .chip-lbl { font-size: .7rem; color: rgba(255,255,255,.55); margin-top: .08rem; }
+
+  /* ── BODY LAYOUT ── */
+  .body-grid {
+    padding: 2rem 0 3rem;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.6rem;
+    align-items: start;
+  }
+
+  @media (max-width: 740px) { .body-grid { grid-template-columns: 1fr; } }
+
+  /* ── INFO CARD ── */
+  .info-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .info-card:last-child { margin-bottom: 0; }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: .85rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .info-card p { font-size: .9rem; color: var(--gray-700); line-height: 1.7; }
+
+  .detail-row {
+    display: flex; align-items: flex-start; gap: .6rem;
+    padding: .5rem 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: .87rem;
+    color: var(--gray-700);
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+  .detail-icon { width: 18px; text-align: center; flex-shrink: 0; padding-top: .05rem; }
+  .detail-label { color: var(--gray-400); min-width: 80px; flex-shrink: 0; font-size: .8rem; }
+
+  /* ── MAP CARD ── */
+  .map-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.1rem;
+  }
+
+  .map-card-head {
+    padding: .9rem 1.2rem .65rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .map-card-head h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    margin-bottom: .12rem;
+  }
+
+  .map-card-head p { font-size: .76rem; color: var(--muted); }
+
+  #mini-map { width: 100%; height: 210px; }
+
+  .map-card-foot {
+    padding: .55rem 1.2rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .map-card-foot span { font-size: .75rem; color: var(--muted); }
+  .map-card-foot a    { font-size: .75rem; font-weight: 600; color: var(--black); }
+  .map-card-foot a:hover { text-decoration: underline; }
+
+  /* ── SIDEBAR CARD ── */
+  .side-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.3rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .side-card:last-child { margin-bottom: 0; }
+
+  .side-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    margin-bottom: .85rem;
+    padding-bottom: .55rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .side-card .btn { width: 100%; margin-bottom: .5rem; }
+  .side-card .btn:last-of-type { margin-bottom: 0; }
+
+  /* ── OTHER DOCTORS ── */
+  .other-item {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .55rem .5rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    margin-bottom: .35rem;
+    cursor: pointer;
+    transition: background .15s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .other-item:hover { background: var(--gray-50); border-color: var(--border); }
+
+  .other-avatar {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    background: var(--black);
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .other-name { font-size: .84rem; font-weight: 600; }
+  .other-spec { font-size: .73rem; color: var(--muted); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <a href="{% url 'doctor_map:map' %}">← Map</a>
+    <sep>›</sep>
+    {{ doctor.name }}
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="avatar">{{ doctor.initials }}</div>
+
+      <div class="hero-meta">
+        <h1>{{ doctor.name }}</h1>
+        <div class="hero-spec">{{ doctor.specialty }}</div>
+
+        <div class="hero-tags">
+          <span class="htag htag-white">{{ doctor.experience }} Experience</span>
+          <span class="htag {% if doctor.available %}htag-green{% else %}htag-red{% endif %}">
+            {% if doctor.available %}Available Today{% else %}Not Available{% endif %}
+          </span>
+          <span class="htag htag-white">📍 {{ doctor.city }}, Gujarat</span>
+        </div>
+
+        <div class="stat-chips">
+          <div class="chip">
+            <div class="chip-val">&#9733; {{ doctor.rating }}</div>
+            <div class="chip-lbl">Rating</div>
+          </div>
+          <div class="chip">
+            <div class="chip-val">{{ doctor.fee }}</div>
+            <div class="chip-lbl">Consult Fee</div>
+          </div>
+          <div class="chip">
+            <div class="chip-val">{{ doctor.experience }}</div>
+            <div class="chip-lbl">Experience</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="container">
+  <div class="body-grid">
+
+    <!-- LEFT — details + mini map -->
+    <div>
+
+      <!-- About -->
+      <div class="info-card">
+        <div class="card-title">About</div>
+        <p>{{ doctor.bio }}</p>
+      </div>
+
+      <!-- Clinic Details -->
+      <div class="info-card">
+        <div class="card-title">Clinic Details</div>
+        <div class="detail-row">
+          <span class="detail-icon">📍</span>
+          <span class="detail-label">Address</span>
+          <span>{{ doctor.address }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">🕐</span>
+          <span class="detail-label">Timings</span>
+          <span>{{ doctor.timings }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">📞</span>
+          <span class="detail-label">Phone</span>
+          <span>{{ doctor.phone }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">💰</span>
+          <span class="detail-label">Fee</span>
+          <span>{{ doctor.fee }} per consultation</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">🏙️</span>
+          <span class="detail-label">City</span>
+          <span>{{ doctor.city }}, Gujarat</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">🧭</span>
+          <span class="detail-label">Coordinates</span>
+          <span>{{ doctor.lat }}&deg; N, {{ doctor.lng }}&deg; E</span>
+        </div>
+      </div>
+
+      <!-- Mini Map -->
+      <div class="map-card">
+        <div class="map-card-head">
+          <h3>Clinic Location</h3>
+          <p>{{ doctor.address }}</p>
+        </div>
+        <div id="mini-map"></div>
+        <div class="map-card-foot">
+          <span>{{ doctor.lat }}&deg; N, {{ doctor.lng }}&deg; E</span>
+          <a href="{% url 'doctor_map:map' %}">View all doctors on map →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT — actions + other doctors -->
+    <div>
+
+      <div class="side-card">
+        <h3>Quick Actions</h3>
+        <a href="{% url 'doctor_map:map' %}" class="btn btn-dark">← Back to Full Map</a>
+        <a href="tel:{{ doctor.phone }}" class="btn btn-outline">📞 Call {{ doctor.phone }}</a>
+      </div>
+
+      <div class="side-card">
+        <h3>Other Doctors</h3>
+        {% for other in others %}
+        <a href="{% url 'doctor_map:detail' other.id %}" class="other-item">
+          <div class="other-avatar">{{ other.initials }}</div>
+          <div>
+            <div class="other-name">{{ other.name }}</div>
+            <div class="other-spec">{{ other.specialty }} · {{ other.city }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{% if maps_api_key %}
+<script>
+function initMiniMap() {
+  const pos = { lat: {{ doctor.lat }}, lng: {{ doctor.lng }} };
+
+  const map = new google.maps.Map(document.getElementById("mini-map"), {
+    center:            pos,
+    zoom:              15,
+    mapTypeControl:    false,
+    streetViewControl: false,
+    zoomControl:       true,
+    fullscreenControl: false,
+    styles: [
+      { featureType: "all",       elementType: "labels.icon",     stylers: [{ visibility: "off" }] },
+      { featureType: "poi",       elementType: "all",              stylers: [{ visibility: "off" }] },
+      { featureType: "road",      elementType: "geometry",         stylers: [{ color: "#ffffff" }] },
+      { featureType: "road.arterial", elementType: "geometry",     stylers: [{ color: "#eeeeee" }] },
+      { featureType: "water",     elementType: "geometry",         stylers: [{ color: "#c8dce8" }] },
+      { featureType: "landscape", elementType: "geometry",         stylers: [{ color: "#f4f4f4" }] },
+    ],
+  });
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="46" viewBox="0 0 36 46">
+      <path d="M18 1C8.6 1 1 8.6 1 18c0 12.6 17 27 17 27s17-14.4 17-27C35 8.6 27.4 1 18 1z"
+            fill="#111111" stroke="white" stroke-width="1.5"/>
+      <circle cx="18" cy="18" r="6" fill="white"/>
+    </svg>`;
+
+  new google.maps.Marker({
+    position: pos,
+    map:      map,
+    title:    "{{ doctor.name }}",
+    icon: {
+      url:    "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
+      anchor: new google.maps.Point(18, 46),
+      scaledSize: new google.maps.Size(36, 46),
+    },
+  });
+}
+</script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&callback=initMiniMap&loading=async"
+  async defer>
+</script>
+{% else %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const el = document.getElementById("mini-map");
+  el.style.cssText = "display:flex;align-items:center;justify-content:center;background:#f4f4f4;flex-direction:column;gap:.5rem;";
+  el.innerHTML = `
+    <span style="font-size:1.8rem;">🗺️</span>
+    <span style="font-size:.8rem;color:#888;">Add GOOGLE_MAPS_API_KEY to settings.py</span>`;
+});
+</script>
+{% endif %}
+{% endblock %}

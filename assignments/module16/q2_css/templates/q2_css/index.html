@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}CSS Styled Template{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>CSS Styling in Django</h1>
+    </div>
+
+  <div class="grid-2">
+
+
+
+  </div>
+
+  <div class="card" style="margin-top:1.2rem;">
+    <div class="section-title"> Styled Components Demo</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.8rem;margin-bottom:1.2rem;">
+      <button class="btn btn-primary">Primary Button</button>
+      <button class="btn btn-outline">Outline Button</button>
+      <button class="btn btn-danger">Danger Button</button>
+      <button class="btn btn-success">Success Button</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1.2rem;">
+      <span class="badge badge-primary">Primary Badge</span>
+      <span class="badge badge-success">Success Badge</span>
+      <span class="badge badge-error">Error Badge</span>
+    </div>
+    <div class="alert alert-info">This is an info alert styled with CSS!</div>
+    <div class="alert alert-success">This is a success alert!</div>
+    <div class="alert alert-error" style="margin-bottom:0;">This is an error alert!</div>
+  </div>
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

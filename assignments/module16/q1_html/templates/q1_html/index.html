@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}HTML Template Rendering{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Django Template System</h1>
+    </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-title">Data</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--text-muted);">Student Name</span>
+          <span class="badge badge-primary">{{ student_name }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--text-muted);">Course</span>
+          <span class="badge badge-primary">{{ course }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--text-muted);">Server Time</span>
+          <span class="badge badge-success">{{ current_time }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:0.5rem 0;">
+          <span style="color:var(--text-muted);">Enrolled?</span>
+          <span class="badge {% if is_enrolled %}badge-success{% else %}badge-error{% endif %}">
+            {% if is_enrolled %}Yes ✓{% else %}No{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}MVT Architecture Demo{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>MVT Architecture</h1>
+    </div>
+
+  <div class="card" style="margin-bottom:1.5rem;">
+    <div class="section-title"> How MVT Works in Django</div>
+    <div class="grid-3">
+      <div style="background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.3);border-radius:10px;padding:1.2rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;"></div>
+        <h3 style="color:var(--primary);margin-bottom:0.5rem;">Model</h3>
+        <div style="margin-top:0.8rem;font-size:0.75rem;background:var(--surface2);padding:0.5rem;border-radius:6px;">models.py</div>
+      </div>
+      <div style="background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.3);border-radius:10px;padding:1.2rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;"></div>
+        <h3 style="color:var(--secondary);margin-bottom:0.5rem;">View</h3>
+        <div style="margin-top:0.8rem;font-size:0.75rem;background:var(--surface2);padding:0.5rem;border-radius:6px;">views.py</div>
+      </div>
+      <div style="background:rgba(255,101,132,0.08);border:1px solid rgba(255,101,132,0.3);border-radius:10px;padding:1.2rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;"></div>
+        <h3 style="color:var(--accent);margin-bottom:0.5rem;">Template</h3>
+        <div style="margin-top:0.8rem;font-size:0.75rem;background:var(--surface2);padding:0.5rem;border-radius:6px;">templates/*.html</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.2rem;">
+    <div class="section-title"> Model Data (from database)</div>
+    {% if articles %}
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      {% for art in articles %}
+      <div style="padding:0.75rem;background:var(--surface2);border-radius:8px;">
+        <strong>{{ art.title }}</strong>
+        <span style="color:var(--text-muted);font-size:0.8rem;margin-left:1rem;">{{ art.created_at|date:"M d, Y" }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">No articles yet. Add some via <a href="/admin/q7_mvt/article/add/" style="color:var(--primary);">Django Admin</a>.</div>
+    {% endif %}
+  </div>
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

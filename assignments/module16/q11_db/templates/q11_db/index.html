@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Database Connectivity{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Database Connectivity</h1>
+    </div>
+
+  <div class="alert {% if status.connected %}alert-success{% else %}alert-error{% endif %}">
+    {% if status.connected %}
+      <span class="status-dot online"></span>  Successfully connected to database: <strong>{{ status.db_name }}</strong>
+    {% else %}
+      <span class="status-dot offline"></span>  Connection failed: {{ status.error }}
+      <br><small>Check your <code>DATABASES</code> configuration in <code>settings.py</code>.</small>
+    {% endif %}
+  </div>
+
+  <div class="card" style="margin-top:1.2rem; max-width:600px;">
+    {% if editing_doctor %}
+      <div class="section-title">Edit Doctor</div>
+      <form method="POST" action="{% url 'q11_index' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="edit">
+        <input type="hidden" name="doc_id" value="{{ editing_doctor.id }}">
+
+        <div class="form-group"><label>Name</label><input type="text" name="name" class="form-control" value="{{ editing_doctor.name }}" required></div>
+        <div class="form-group"><label>Specialty</label>
+          <select name="specialty" class="form-control" required>
+            <option value="">-- Select Specialty --</option>
+            {% for code, name in specialties %}
+            <option value="{{ code }}" {% if editing_doctor.specialty == code %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label>Hospital</label><input type="text" name="hospital" class="form-control" value="{{ editing_doctor.hospital }}" required></div>
+        <div class="form-group"><label>City</label><input type="text" name="city" class="form-control" value="{{ editing_doctor.city }}" required></div>
+        <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control" value="{{ editing_doctor.phone }}" required></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" value="{{ editing_doctor.email }}" required></div>
+        <div style="display:flex;gap:10px;">
+          <button type="submit" class="btn btn-primary" style="flex:1;">Update Doctor</button>
+          <a href="{% url 'q11_index' %}" class="btn btn-outline" style="flex:1;text-align:center;">Cancel</a>
+        </div>
+      </form>
+    {% else %}
+      <div class="section-title">Add New Doctor</div>
+      <form method="POST" action="{% url 'q11_index' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <div class="form-group"><label>Name</label><input type="text" name="name" class="form-control" required></div>
+        <div class="form-group"><label>Specialty</label>
+          <select name="specialty" class="form-control" required>
+            <option value="">-- Select Specialty --</option>
+            {% for code, name in specialties %}
+            <option value="{{ code }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label>Hospital</label><input type="text" name="hospital" class="form-control" required></div>
+        <div class="form-group"><label>City</label><input type="text" name="city" class="form-control" required></div>
+        <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control" required></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Add Doctor</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <div class="card" style="margin-top:1.2rem;">
+    <div class="section-title">Manage Doctors Database</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Specialty</th>
+          <th>Hospital</th>
+          <th>City</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for doc in doctors %}
+        <tr>
+          <td>Dr. {{ doc.name }}</td>
+          <td>{{ doc.specialty }}</td>
+          <td>{{ doc.hospital }}</td>
+          <td>{{ doc.city }}</td>
+          <td>
+            <a href="?edit_id={{ doc.id }}" class="btn btn-outline" style="padding:4px 8px;font-size:0.75rem;text-decoration:none;">Edit</a>
+            <form method="POST" action="{% url 'q11_index' %}" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="doc_id" value="{{ doc.id }}">
+              <button type="submit" class="btn btn-danger" style="padding:4px 8px;font-size:0.75rem;">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No doctors in database.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

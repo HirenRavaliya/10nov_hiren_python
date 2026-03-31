@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Dr. {{ doctor.name }}{% endblock %}
+{% block content %}
+<div class="container fade-in" style="max-width:700px;">
+  <a href="/q6/" class="back-link">← Back to Doctors</a>
+  <div class="card" style="margin-top:1.5rem;">
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;"></div>
+      <div>
+        <h2 style="font-size:1.5rem;margin-bottom:0.3rem;">Dr. {{ doctor.name }}</h2>
+        <span class="badge badge-primary">{{ doctor.specialty }}</span>
+        <span class="badge {% if doctor.is_available %}badge-success{% else %}badge-error{% endif %}" style="margin-left:0.5rem;">{% if doctor.is_available %}Available{% else %}Unavailable{% endif %}</span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="grid-2" style="gap:1rem;">
+      <div><div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.2rem;">HOSPITAL</div><div>{{ doctor.hospital }}</div></div>
+      <div><div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.2rem;">CITY</div><div>{{ doctor.city }}</div></div>
+      <div><div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.2rem;">PHONE</div><div>{{ doctor.phone }}</div></div>
+      <div><div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.2rem;">EMAIL</div><div>{{ doctor.email }}</div></div>
+      <div><div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.2rem;">EXPERIENCE</div><div>{{ doctor.experience_years }} years</div></div>
+      <div><div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.2rem;">CONSULTATION FEE</div><div style="color:var(--success);font-weight:600;">₹{{ doctor.fee }}</div></div>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

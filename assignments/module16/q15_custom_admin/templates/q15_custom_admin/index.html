@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Advanced Admin Customization{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Customized Django Admin</h1>
+    </div>
+  <div class="alert alert-info"> Live: <a href="/admin/q6_doctor/doctor/" style="color:var(--primary);font-weight:600;">Open Doctor Admin Panel →</a></div>
+  <div class="grid-2" style="margin-top:1.2rem;">
+    <div class="card">
+      <div class="section-title"> Applied Customizations</div>
+      <div style="display:flex;flex-direction:column;gap:0.7rem;">
+        <div style="padding:0.7rem;background:var(--surface2);border-radius:8px;"><code style="color:var(--primary);">list_display</code></div>
+        <div style="padding:0.7rem;background:var(--surface2);border-radius:8px;"><code style="color:var(--primary);">list_filter</code></div>
+        <div style="padding:0.7rem;background:var(--surface2);border-radius:8px;"><code style="color:var(--primary);">search_fields</code></div>
+        <div style="padding:0.7rem;background:var(--surface2);border-radius:8px;"><code style="color:var(--primary);">list_editable</code></div>
+        <div style="padding:0.7rem;background:var(--surface2);border-radius:8px;"><code style="color:var(--primary);">fieldsets</code></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

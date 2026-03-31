@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}ORM CRUD Operations{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>CRUD via Django ORM</h1>
+    </div>
+
+  {% for msg in messages %}
+  <div class="alert {% if msg.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">{{ msg }}</div>
+  {% endfor %}
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+    <div>
+      <span class="badge badge-primary">Total: {{ students.count }}</span>
+      <span style="margin-left:1rem;color:var(--text-muted);font-size:0.875rem;">Django ORM: <code>Student.objects.all()</code></span>
+    </div>
+    <a href="/q12/add/" class="btn btn-primary">+ Add Student</a>
+  </div>
+
+  {% if students %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Roll No</th><th>Name</th><th>Course</th><th>Marks</th><th>Email</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for s in students %}
+      <tr>
+        <td><span class="badge badge-primary">{{ s.roll_no }}</span></td>
+        <td><strong>{{ s.name }}</strong></td>
+        <td>{{ s.course }}</td>
+        <td><span style="color:{% if s.marks >= 75 %}var(--success){% elif s.marks >= 50 %}var(--warning){% else %}var(--error){% endif %};">{{ s.marks }}%</span></td>
+        <td>{{ s.email }}</td>
+        <td style="display:flex;gap:0.4rem;">
+          <a href="/q12/edit/{{ s.pk }}/" class="btn btn-outline" style="padding:0.3rem 0.7rem;font-size:0.8rem;">Edit</a>
+          <form method="post" action="/q12/delete/{{ s.pk }}/" style="display:inline;" onsubmit="return confirm('Delete this student?')">{% csrf_token %}<button type="submit" class="btn btn-danger" style="padding:0.3rem 0.7rem;font-size:0.8rem;">Del</button></form>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="card" style="text-align:center;padding:3rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;"></div>
+    <a href="/q12/add/" class="btn btn-primary">Add First Student</a>
+  </div>
+  {% endif %}
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

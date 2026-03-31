@@ -1,0 +1,67 @@
+{% extends "social_auth/base.html" %}
+{% block title %}Sign Out — SecureAuth{% endblock %}
+
+{% block extra_css %}
+<style>
+    .logout-wrap {
+        min-height: calc(100vh - 128px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .logout-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        max-width: 380px;
+        width: 100%;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, .06);
+    }
+
+    .logout-icon {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .logout-card h2 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.5rem;
+        margin-bottom: .4rem;
+    }
+
+    .logout-card p {
+        color: var(--muted);
+        font-size: .9rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+    }
+
+    .btn-row {
+        display: flex;
+        flex-direction: column;
+        gap: .6rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="logout-wrap">
+    <div class="logout-card">
+        <div class="logout-icon">👋</div>
+        <h2>Sign out?</h2>
+        <p>You will be signed out of SecureAuth. You can sign back in anytime with Google or Facebook.</p>
+
+        <div class="btn-row">
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-dark" style="width:100%">Yes, sign me out</button>
+            </form>
+            <a href="{% url 'social_auth:dashboard' %}" class="btn btn-outline">Cancel — stay signed in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,390 @@
+{% extends "doctor_finder/base.html" %}
+
+{% block title %}{{ doctor.name }} — DoctorFinder{% endblock %}
+
+{% block extra_css %}
+<style>
+  
+  .breadcrumb {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: .7rem 1.5rem;
+    font-size: .83rem;
+    color: var(--muted);
+  }
+
+  .breadcrumb a {
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .breadcrumb span {
+    margin: 0 .4rem;
+    color: var(--gray-300);
+  }
+
+  
+  .profile-hero {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 0;
+  }
+
+  .profile-hero-inner {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .big-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--black);
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+    letter-spacing: .02em;
+  }
+
+  .profile-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    margin-bottom: .25rem;
+  }
+
+  .profile-spec {
+    color: var(--gray-500);
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: .8rem;
+  }
+
+  .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-chips {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: .4rem;
+  }
+
+  .chip {
+    text-align: center;
+    padding: .55rem .9rem;
+    border-radius: 10px;
+    background: var(--gray-50);
+    border: 1px solid var(--border);
+    min-width: 78px;
+  }
+
+  .chip-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .chip-lbl {
+    font-size: .72rem;
+    color: var(--muted);
+    margin-top: .1rem;
+  }
+
+  
+  .profile-layout {
+    padding: 2.5rem 0;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.75rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  
+  .info-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .info-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: .9rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--black);
+  }
+
+  .info-card p {
+    line-height: 1.7;
+    color: var(--gray-700);
+    font-size: .95rem;
+  }
+
+  .edu-list {
+    list-style: none;
+  }
+
+  .edu-list li {
+    padding: .55rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    font-size: .9rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+  }
+
+  .edu-list li:last-child {
+    border-bottom: none;
+  }
+
+  .edu-list li::before {
+    content: "▸";
+    flex-shrink: 0;
+    color: var(--gray-400);
+  }
+
+  .lang-list {
+    display: flex;
+    gap: .45rem;
+    flex-wrap: wrap;
+  }
+
+  
+  .book-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem;
+    position: sticky;
+    top: 78px;
+  }
+
+  .book-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: .9rem;
+    color: var(--black);
+  }
+
+  .avail-line {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .88rem;
+    margin-bottom: 1.2rem;
+    color: var(--gray-700);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot-green {
+    background: #22c55e;
+  }
+
+  .dot-red {
+    background: #ef4444;
+  }
+
+  .book-card a.btn {
+    width: 100%;
+    margin-bottom: .55rem;
+  }
+
+  .book-card .note {
+    font-size: .75rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: .4rem;
+  }
+
+  
+  .sim-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    margin-bottom: .7rem;
+  }
+
+  .sim-card {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .65rem .7rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: .5rem;
+    transition: background .15s;
+    color: inherit;
+  }
+
+  .sim-card:hover {
+    background: var(--gray-50);
+  }
+
+  .sim-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    font-weight: 700;
+    background: var(--black);
+    color: var(--white);
+    flex-shrink: 0;
+  }
+
+  .sim-name {
+    font-size: .86rem;
+    font-weight: 600;
+  }
+
+  .sim-spec {
+    font-size: .75rem;
+    color: var(--muted);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="{% url 'doctor_finder:home' %}">Home</a>
+    <span>›</span>
+    <span>{{ doctor.name }}</span>
+  </div>
+</div>
+
+
+<div class="profile-hero">
+  <div class="container">
+    <div class="profile-hero-inner">
+      <div class="big-avatar">{{ doctor.image_placeholder }}</div>
+
+      <div>
+        <h1 class="profile-name">{{ doctor.name }}</h1>
+        <div class="profile-spec">{{ doctor.specialty }}</div>
+
+        <div class="profile-tags">
+          <span class="badge badge-dark">{{ doctor.experience }} Experience</span>
+          <span class="badge {% if doctor.available %}badge-green{% else %}badge-red{% endif %}">
+            {% if doctor.available %}Available Today{% else %}Currently Unavailable{% endif %}
+          </span>
+          <span class="badge badge-gray">{{ doctor.location }}</span>
+        </div>
+
+        <div class="stat-chips">
+          <div class="chip">
+            <div class="chip-val">&#9733; {{ doctor.rating }}</div>
+            <div class="chip-lbl">Rating</div>
+          </div>
+          <div class="chip">
+            <div class="chip-val">{{ doctor.consultations }}+</div>
+            <div class="chip-lbl">Consultations</div>
+          </div>
+          <div class="chip">
+            <div class="chip-val">{{ doctor.experience }}</div>
+            <div class="chip-lbl">Experience</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="profile-layout">
+
+
+    <div>
+      <div class="info-card">
+        <h3>About</h3>
+        <p>{{ doctor.bio }}</p>
+      </div>
+
+      <div class="info-card">
+        <h3>Education &amp; Qualifications</h3>
+        <ul class="edu-list">
+          {% for edu in doctor.education %}
+          <li>{{ edu }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>Languages Spoken</h3>
+        <div class="lang-list">
+          {% for lang in doctor.languages %}
+          <span class="badge badge-gray">{{ lang }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+      <div class="book-card">
+        <h3>Book a Consultation</h3>
+        <div class="avail-line">
+          <span class="dot {% if doctor.available %}dot-green{% else %}dot-red{% endif %}"></span>
+          {% if doctor.available %}Next slot available today{% else %}Currently unavailable{% endif %}
+        </div>
+        <a href="{% url 'doctor_finder:contact' %}?doctor={{ doctor.id }}" class="btn btn-primary">Book Appointment</a>
+        <a href="{% url 'doctor_finder:contact' %}" class="btn btn-outline">Send Enquiry</a>
+        <p class="note">Free cancellation up to 2 hours before</p>
+      </div>
+
+      <div class="book-card" style="margin-top:1.1rem;">
+        <div class="sim-section">
+          <h3>Other Doctors</h3>
+          {% for sim in similar %}
+          <a href="{% url 'doctor_finder:profile' sim.id %}" class="sim-card">
+            <div class="sim-avatar">{{ sim.image_placeholder }}</div>
+            <div>
+              <div class="sim-name">{{ sim.name }}</div>
+              <div class="sim-spec">{{ sim.specialty }}</div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,390 @@
+{% extends "doctor_finder/base.html" %}
+
+{% block title %}Book Appointment — DoctorFinder{% endblock %}
+
+{% block extra_css %}
+<style>
+  
+  .page-header {
+    background: var(--black);
+    color: var(--white);
+    padding: 3rem 1.5rem 2.5rem;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.1rem;
+    margin-bottom: .45rem;
+  }
+
+  .page-header p {
+    color: var(--gray-300);
+    font-size: .95rem;
+  }
+
+  
+  .contact-layout {
+    padding: 2.5rem 0 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.75rem;
+    align-items: start;
+  }
+
+  @media (max-width: 780px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  
+  .form-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem;
+  }
+
+  .form-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    margin-bottom: 1.4rem;
+    color: var(--black);
+    padding-bottom: .8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 520px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field {
+    margin-bottom: 1rem;
+  }
+
+  .field label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: .32rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: .68rem 1rem;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: .92rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--black);
+    background: var(--gray-50);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--black);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .07);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 96px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: .85rem;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 9px;
+    font-size: .96rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    margin-top: .5rem;
+    transition: background .2s, transform .15s;
+  }
+
+  .submit-btn:hover {
+    background: var(--gray-900);
+    transform: translateY(-1px);
+  }
+
+  
+  .success-box {
+    background: #f0faf4;
+    border: 1.5px solid #a3d9b8;
+    border-radius: 14px;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .success-box .icon {
+    font-size: 3rem;
+    margin-bottom: .75rem;
+  }
+
+  .success-box h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--black);
+    margin-bottom: .5rem;
+  }
+
+  .success-box p {
+    color: var(--gray-700);
+    margin-bottom: 1.25rem;
+  }
+
+  
+  .info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .info-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+
+  .info-block h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    margin-bottom: .85rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--black);
+  }
+
+  .info-row {
+    display: flex;
+    gap: .7rem;
+    align-items: flex-start;
+    padding: .5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .86rem;
+    color: var(--gray-700);
+  }
+
+  .info-row:last-child {
+    border-bottom: none;
+  }
+
+  .info-row .icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    padding-top: .05rem;
+  }
+
+  .steps {
+    counter-reset: steps;
+    list-style: none;
+  }
+
+  .steps li {
+    display: flex;
+    gap: .7rem;
+    align-items: flex-start;
+    padding: .55rem 0;
+    font-size: .86rem;
+    color: var(--gray-700);
+    counter-increment: steps;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .steps li:last-child {
+    border-bottom: none;
+  }
+
+  .steps li::before {
+    content: counter(steps);
+    background: var(--black);
+    color: var(--white);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: .12rem;
+  }
+
+  .dark-block {
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--gray-300);
+  }
+
+  .dark-block h3 {
+    color: var(--white);
+    border-bottom-color: rgba(255, 255, 255, .12);
+  }
+
+  .dark-block .info-row {
+    border-bottom-color: rgba(255, 255, 255, .1);
+    color: var(--gray-300);
+  }
+
+  .dark-block a {
+    color: var(--gray-200);
+    font-weight: 500;
+  }
+
+  .dark-block a:hover {
+    color: var(--white);
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="page-header">
+  <h1>Book an Appointment</h1>
+  <p>Fill in the form below — we'll confirm your slot within 2 hours.</p>
+</div>
+
+<div class="container">
+  <div class="contact-layout">
+
+
+    <div>
+      {% if submitted %}
+      <div class="success-box">
+        <div class="icon">✓</div>
+        <h2>Request Received!</h2>
+        <p>We'll confirm your appointment via email or phone within 2 hours.</p>
+        <a href="{% url 'doctor_finder:home' %}" class="btn btn-primary">← Back to Home</a>
+      </div>
+
+      {% else %}
+      <div class="form-card">
+        <h2>Your Details</h2>
+        <form method="post" action="{% url 'doctor_finder:contact' %}">
+          {% csrf_token %}
+
+          <div class="form-row">
+            <div class="field">
+              <label>First Name *</label>
+              <input type="text" name="first_name" placeholder="Hiren" required />
+            </div>
+            <div class="field">
+              <label>Last Name *</label>
+              <input type="text" name="last_name" placeholder="Patel" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Email *</label>
+              <input type="email" name="email" placeholder="hiren@example.com" required />
+            </div>
+            <div class="field">
+              <label>Phone Number *</label>
+              <input type="tel" name="phone" placeholder="+91 98765 43210" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Select Doctor *</label>
+            <select name="doctor" required>
+              <option value="">— Choose a doctor —</option>
+              {% for doc_id, doc_name in doctors_list %}
+              <option value="{{ doc_id }}" {% if request.GET.doctor == doc_id|stringformat:"s" %}selected{% endif %}>
+                {{ doc_name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Preferred Date *</label>
+              <input type="date" name="date" required />
+            </div>
+            <div class="field">
+              <label>Preferred Time</label>
+              <select name="time_slot">
+                <option value="">Any time</option>
+                <option>Morning (9 AM – 12 PM)</option>
+                <option>Afternoon (12 PM – 4 PM)</option>
+                <option>Evening (4 PM – 7 PM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Reason / Symptoms</label>
+            <textarea name="message" placeholder="Briefly describe your symptoms or reason for visit…"></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Confirm Appointment Request</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+
+    <div class="info-sidebar">
+
+      <div class="info-block">
+        <h3>Contact Info</h3>
+        <div class="info-row"><span class="icon">📞</span><span>+91 79 2345 6789</span></div>
+        <div class="info-row"><span class="icon">✉️</span><span>hello@doctorfinder.in</span></div>
+        <div class="info-row"><span class="icon">📍</span><span>Science City Rd, Sola, Ahmedabad – 380060</span></div>
+        <div class="info-row"><span class="icon">🕐</span><span>Mon–Sat, 9 AM – 7 PM</span></div>
+      </div>
+
+      <div class="info-block">
+        <h3>How it Works</h3>
+        <ol class="steps">
+          <li>Fill in your details and choose a doctor.</li>
+          <li>Submit the form — we verify availability.</li>
+          <li>Receive confirmation via SMS/email within 2 hrs.</li>
+          <li>Visit the clinic or join a video consult.</li>
+        </ol>
+      </div>
+
+      <div class="info-block dark-block">
+        <h3>Quick Links</h3>
+        <div class="info-row">
+          <span class="icon">→</span>
+          <a href="{% url 'doctor_finder:home' %}">Browse all doctors</a>
+        </div>
+        <div class="info-row">
+          <span class="icon">→</span>
+          <a href="{% url 'doctor_finder:profile' 1 %}">View featured doctor</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Simple Django Webpage{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Simple Webpage with Django</h1>
+    </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-title"> This Webpage Is Powered By</div>
+      <div style="display:flex;flex-direction:column;gap:0.8rem;">
+        <div class="alert alert-info" style="margin:0;">
+          <strong>URL Pattern:</strong> <code>/q4/</code> → view → template
+        </div>
+        <div class="alert alert-success" style="margin:0;">
+          <strong>View Function:</strong> <code>q4_intro.views.index()</code>
+        </div>
+        <div class="alert alert-info" style="margin:0;">
+          <strong>Template:</strong> <code>q4_intro/index.html</code>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <h3 style="margin-bottom:0.5rem;">{{ message }}</h3>
+      </div>
+
+
+  </div>
+
+  <div class="card" style="margin-top:1.2rem;">
+    <div class="section-title"> Django Built-in Tools Used</div>
+    <div class="grid-3" style="margin-top:0.8rem;">
+      <div style="padding:1rem;background:var(--surface2);border-radius:8px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;"></div>
+        <div style="font-weight:600;margin-bottom:0.3rem;">URL Dispatcher</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">django.urls.path()</div>
+      </div>
+      <div style="padding:1rem;background:var(--surface2);border-radius:8px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;"></div>
+        <div style="font-weight:600;margin-bottom:0.3rem;">Views</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">django.shortcuts.render()</div>
+      </div>
+      <div style="padding:1rem;background:var(--surface2);border-radius:8px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;"></div>
+        <div style="font-weight:600;margin-bottom:0.3rem;">Template Engine</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">Django Template Language</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

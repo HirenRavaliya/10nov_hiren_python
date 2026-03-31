@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Q13{% endblock %}
+{% block content %}
+<div class="container fade-in" style="max-width:700px;">
+  <div class="page-header">
+    <h1> Welcome, {{ user.username }}!</h1>
+    </div>
+  <div class="card">
+    <div class="section-title">Session Info</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div style="display:flex;gap:1rem;padding:0.5rem 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);width:150px;">Username</span><strong>{{ user.username }}</strong></div>
+      <div style="display:flex;gap:1rem;padding:0.5rem 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);width:150px;">Email</span><strong>{{ user.email|default:"Not set" }}</strong></div>
+      <div style="display:flex;gap:1rem;padding:0.5rem 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);width:150px;">Staff?</span><strong>{{ user.is_staff|yesno:"Yes,No" }}</strong></div>
+      <div style="display:flex;gap:1rem;padding:0.5rem 0;"><span style="color:var(--text-muted);width:150px;">Joined</span><strong>{{ user.date_joined|date:"M d, Y" }}</strong></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:10px;">
+      <a href="{% url 'q13_profile' %}" class="btn btn-outline" style="flex:1;text-align:center;">Update Profile</a>
+      <a href="{% url 'q13_logout' %}" class="btn btn-danger" style="flex:1;text-align:center;">Logout</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

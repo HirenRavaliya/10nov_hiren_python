@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Profile Manager{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Doctor Profile Manager</h1>
+    </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+    <span style="color:var(--text-muted);">{{ doctors.count }} doctor{{ doctors.count|pluralize }} registered</span>
+    <a href="/q6/add/" class="btn btn-primary">+ Add Doctor</a>
+  </div>
+  {% if doctors %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Specialty</th><th>Hospital</th><th>City</th><th>Exp.</th><th>Fee</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+      {% for doc in doctors %}
+      <tr>
+        <td><strong>Dr. {{ doc.name }}</strong></td>
+        <td><span class="badge badge-primary">{{ doc.specialty }}</span></td>
+        <td>{{ doc.hospital }}</td>
+        <td>{{ doc.city }}</td>
+        <td>{{ doc.experience_years }} yrs</td>
+        <td>₹{{ doc.fee }}</td>
+        <td><span class="badge {% if doc.is_available %}badge-success{% else %}badge-error{% endif %}">{% if doc.is_available %}Available{% else %}Unavailable{% endif %}</span></td>
+        <td><a href="/q6/{{ doc.pk }}/" class="btn btn-outline" style="padding:0.3rem 0.8rem;font-size:0.8rem;">View</a></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="card" style="text-align:center;padding:3rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;"></div>
+    <div class="section-title">No Doctors Yet</div>
+    <a href="/q6/add/" class="btn btn-primary">Add First Doctor</a>
+  </div>
+  {% endif %}
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

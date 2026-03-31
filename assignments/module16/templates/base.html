@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Django Lab Project{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/global.css">
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+  <header style="border-bottom: 1px solid #e5e5e5; padding: 1rem 0; margin-bottom: 2rem;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="/" style="font-weight: 600; color: #000; text-decoration: none; font-size: 1.2rem;">Django Lab
+        Project</a>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="/static/js/global.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

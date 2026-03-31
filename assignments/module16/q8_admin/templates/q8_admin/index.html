@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Django Admin Customization{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>Customize Django Admin</h1>
+    </div>
+
+  <div class="alert alert-info">
+     <strong>Live Admin Panel:</strong> <a href="/admin/" style="color:var(--primary);font-weight:600;">/admin/</a> — Login and manage doctors, users, social accounts
+  </div>
+
+  <div class="grid-2" style="margin-top:1.2rem;">
+    <div class="card">
+      <div class="section-title"> Admin Customizations Applied</div>
+      <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:0.6rem;">
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>list_display</code> — shows name, specialty, city, fee, status</li>
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>list_filter</code> — filter by specialty, city, availability</li>
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>search_fields</code> — search by name, hospital, email</li>
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>list_editable</code> — edit fee and availability inline</li>
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>fieldsets</code> — organized into sections (Personal, Professional, Location)</li>
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>readonly_fields</code> — timestamps are read-only</li>
+        <li style="display:flex;gap:0.5rem;"><span style="color:var(--success);">✓</span> <code>list_per_page</code> — paginated to 20 records</li>
+      </ul>
+    </div>
+
+  </div>
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}

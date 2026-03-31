@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}JavaScript Form Validation{% endblock %}
+{% block content %}
+<div class="container fade-in">
+  <div class="page-header">
+    <h1>JS Form Validation</h1>
+    </div>
+  <div class="card" style="max-width:560px;margin:0 auto;">
+    <div class="section-title"> Contact Form with JS Validation</div>
+    <div id="success-msg" class="alert alert-success" style="display:none;">✓ Form submitted successfully!</div>
+    <form id="contact-form" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+        <div class="error-msg" id="name-err">Name must be at least 3 characters</div>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" id="email" class="form-control" placeholder="you@example.com">
+        <div class="error-msg" id="email-err">Enter a valid email address</div>
+      </div>
+      <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="text" id="phone" class="form-control" placeholder="10-digit phone number">
+        <div class="error-msg" id="phone-err">Enter a valid 10-digit phone number</div>
+      </div>
+      <div class="form-group">
+        <label>Age *</label>
+        <input type="number" id="age" class="form-control" placeholder="Your age (18-100)">
+        <div class="error-msg" id="age-err">Age must be between 18 and 100</div>
+      </div>
+      <div class="form-group">
+        <label>Message *</label>
+        <textarea id="message" class="form-control" rows="3" placeholder="Write your message here..."></textarea>
+        <div class="error-msg" id="message-err">Message must be at least 10 characters</div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Submit Form</button>
+    </form>
+  </div>
+
+
+</div>
+<div id="toast" class="toast"></div>
+{% endblock %}
+{% block extra_js %}
+<script>
+const form = document.getElementById('contact-form');
+function showError(field) {
+  document.getElementById(field).classList.add('error');
+  document.getElementById(field + '-err').classList.add('show');
+}
+function clearError(field) {
+  document.getElementById(field).classList.remove('error');
+  document.getElementById(field + '-err').classList.remove('show');
+}
+['name','email','phone','age','message'].forEach(f => {
+  const el = document.getElementById(f);
+  if (el) el.addEventListener('input', () => clearError(f));
+});
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  let valid = true;
+  const name = document.getElementById('name').value.trim();
+  if (name.length < 3) { showError('name'); valid = false; } else clearError('name');
+  const email = document.getElementById('email').value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email'); valid = false; } else clearError('email');
+  const phone = document.getElementById('phone').value.trim();
+  if (!/^\d{10}$/.test(phone)) { showError('phone'); valid = false; } else clearError('phone');
+  const age = parseInt(document.getElementById('age').value);
+  if (isNaN(age) || age < 18 || age > 100) { showError('age'); valid = false; } else clearError('age');
+  const msg = document.getElementById('message').value.trim();
+  if (msg.length < 10) { showError('message'); valid = false; } else clearError('message');
+  if (valid) {
+    document.getElementById('success-msg').style.display = 'block';
+    form.reset();
+    setTimeout(() => document.getElementById('success-msg').style.display = 'none', 3000);
+  }
+});
+</script>
+{% endblock %}
