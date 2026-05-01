@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Q18 — REST Countries API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q18 · REST Countries API Integration</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">🌍 Country Information</h1>
+    <p style="color:var(--text-muted);">Get population, language, currency and more for any country — no API key required!</p>
+</div>
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+        <form method="get" action="/q18/" class="d-flex gap-2">
+            <input type="text" name="country" class="form-control" placeholder="Enter country name (e.g. India, Germany)" value="{{ country_name }}" required>
+            <button type="submit" class="btn btn-primary-glow" style="white-space:nowrap;"><i class="bi bi-search"></i> Search</button>
+        </form>
+    </div>
+</div>
+
+{% if error %}<div class="row justify-content-center"><div class="col-md-7"><div class="alert alert-danger">{{ error }}</div></div></div>{% endif %}
+
+{% if country %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card-glass">
+            <div class="row align-items-center g-4">
+                <div class="col-auto">
+                    {% if country.flag %}<img src="{{ country.flag }}" alt="Flag" style="height:80px;border-radius:6px;border:1px solid var(--border);">{% endif %}
+                </div>
+                <div class="col">
+                    <h2 class="fw-700">{{ country.flag_emoji }} {{ country.name }}</h2>
+                    <div style="color:var(--text-muted);font-size:0.9rem;">{{ country.official_name }}</div>
+                </div>
+            </div>
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">CAPITAL</div>
+                        <div class="fw-600">{{ country.capital }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">POPULATION</div>
+                        <div class="fw-600">{{ country.population }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">LANGUAGE(S)</div>
+                        <div class="fw-600">{{ country.languages }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">CURRENCY</div>
+                        <div class="fw-600">{{ country.currencies }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">REGION</div>
+                        <div class="fw-600">{{ country.region }} — {{ country.subregion }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">AREA / TIMEZONE</div>
+                        <div class="fw-600" style="font-size:0.9rem;">{{ country.area }} | {{ country.timezone }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if not country_name %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card-glass">
+            <p style="color:var(--text-muted);">Popular searches:</p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <a href="/q18/?country=India" class="tag" style="text-decoration:none;">India</a>
+                <a href="/q18/?country=Germany" class="tag" style="text-decoration:none;">Germany</a>
+                <a href="/q18/?country=Japan" class="tag" style="text-decoration:none;">Japan</a>
+                <a href="/q18/?country=Brazil" class="tag" style="text-decoration:none;">Brazil</a>
+                <a href="/q18/?country=Australia" class="tag" style="text-decoration:none;">Australia</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Q14 — Weather API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q14 · OpenWeatherMap API Integration</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">🌤️ Current Weather</h1>
+    <p style="color:var(--text-muted);">Fetch real-time weather data using the OpenWeatherMap API.</p>
+</div>
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+        <form method="get" action="/q14/" class="d-flex gap-2">
+            <input type="text" name="city" class="form-control" placeholder="Enter city (e.g. Mumbai, London)" value="{{ city }}" required>
+            <button type="submit" class="btn btn-primary-glow" style="white-space:nowrap;"><i class="bi bi-search"></i> Search</button>
+        </form>
+    </div>
+</div>
+
+{% if error %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="alert alert-danger">{{ error }}</div>
+    </div>
+</div>
+{% endif %}
+
+{% if weather %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-glass text-center">
+            <div style="font-size:0.9rem;color:var(--text-muted);">{{ weather.country }}</div>
+            <h2 class="fw-700" style="font-size:2rem;">{{ weather.city }}</h2>
+            <img src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="{{ weather.description }}" style="width:80px;">
+            <div style="font-size:3.5rem;font-weight:700;color:var(--secondary);">{{ weather.temp }}°C</div>
+            <div style="color:var(--text-muted);margin-bottom:1rem;">{{ weather.description }}</div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:0.75rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">FEELS LIKE</div>
+                        <div class="fw-600">{{ weather.feels_like }}°C</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:0.75rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">HUMIDITY</div>
+                        <div class="fw-600">{{ weather.humidity }}%</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:0.75rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">WIND</div>
+                        <div class="fw-600">{{ weather.wind_speed }} m/s</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:0.75rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);">PRESSURE</div>
+                        <div class="fw-600">{{ weather.pressure }} hPa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if not city %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-glass text-center">
+            <div style="font-size:3rem;">🌍</div>
+            <p style="color:var(--text-muted);">Enter a city name to get current weather data.</p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <a href="/q14/?city=Mumbai" class="btn btn-sm tag" style="text-decoration:none;">Mumbai</a>
+                <a href="/q14/?city=London" class="btn btn-sm tag" style="text-decoration:none;">London</a>
+                <a href="/q14/?city=New+York" class="btn btn-sm tag" style="text-decoration:none;">New York</a>
+                <a href="/q14/?city=Tokyo" class="btn btn-sm tag" style="text-decoration:none;">Tokyo</a>
+                <a href="/q14/?city=Sydney" class="btn btn-sm tag" style="text-decoration:none;">Sydney</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

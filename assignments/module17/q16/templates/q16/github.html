@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Q16 — GitHub API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q16 · GitHub API Integration</span>
+    <h1 class="fw-700" style="font-size:2.2rem;"><i class="bi bi-github"></i> GitHub API</h1>
+    <p style="color:var(--text-muted);">List repositories for a user and create new repositories via GitHub API.</p>
+</div>
+
+{% if created_msg %}<div class="alert alert-success">✅ {{ created_msg }}</div>{% endif %}
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <!-- List repos form -->
+        <div class="card-glass mb-3">
+            <h5 class="fw-600 mb-3"><i class="bi bi-list-ul"></i> List Repositories</h5>
+            <form method="get" action="/q16/" class="d-flex gap-2">
+                <input type="text" name="username" class="form-control" placeholder="GitHub username" value="{{ username }}" required>
+                <button type="submit" class="btn btn-primary-glow" style="white-space:nowrap;">List</button>
+            </form>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">Try: torvalds, gvanrossum, django</p>
+        </div>
+        <!-- Create repo form -->
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-folder-plus"></i> Create Repository</h5>
+            {% if not token_configured %}
+            <div class="alert alert-warning" style="font-size:0.82rem;">Add GITHUB_TOKEN to .env to enable repo creation.</div>
+            {% endif %}
+            <form method="post" action="/q16/">
+                {% csrf_token %}
+                <div class="mb-2"><input type="text" name="repo_name" class="form-control" placeholder="Repository name" {% if not token_configured %}disabled{% endif %} required></div>
+                <div class="mb-2"><input type="text" name="description" class="form-control" placeholder="Description (optional)" {% if not token_configured %}disabled{% endif %}></div>
+                <div class="mb-2 form-check">
+                    <input type="checkbox" name="private" class="form-check-input" id="priv" {% if not token_configured %}disabled{% endif %}>
+                    <label class="form-check-label" for="priv">Private repository</label>
+                </div>
+                <button type="submit" class="btn btn-primary-glow w-100" {% if not token_configured %}disabled{% endif %}><i class="bi bi-plus-lg"></i> Create Repo</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        {% if repos %}
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3">{{ username }}'s Repositories ({{ repos|length }})</h5>
+            {% for repo in repos %}
+            <div style="border:1px solid var(--border);border-radius:10px;padding:0.75rem;margin-bottom:0.6rem;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <a href="{{ repo.html_url }}" target="_blank" class="fw-600" style="color:var(--primary);text-decoration:none;">
+                            <i class="bi bi-github"></i> {{ repo.name }}
+                        </a>
+                        {% if repo.private %}<span class="badge bg-secondary ms-1">Private</span>{% endif %}
+                        {% if repo.fork %}<span class="badge" style="background:rgba(108,99,255,0.2);color:var(--primary);">Fork</span>{% endif %}
+                        <div style="color:var(--text-muted);font-size:0.82rem;margin-top:3px;">{{ repo.description|default:"No description" }}</div>
+                    </div>
+                    <div class="text-end" style="font-size:0.8rem;color:var(--text-muted);">
+                        <div>⭐ {{ repo.stargazers_count }}</div>
+                        {% if repo.language %}<div>{{ repo.language }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif username %}
+        <div class="card-glass text-center"><p style="color:var(--text-muted);">No repositories found for "{{ username }}".</p></div>
+        {% else %}
+        <div class="card-glass text-center">
+            <div style="font-size:3rem;">🐙</div>
+            <p style="color:var(--text-muted);">Enter a GitHub username to list their repositories.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

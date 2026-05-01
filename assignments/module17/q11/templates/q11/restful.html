@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Q11 — RESTful API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q11 · RESTful API Design</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">RESTful Doctor API</h1>
+    <p style="color:var(--text-muted);">Proper REST design with <code>generics.ListCreateAPIView</code> and <code>RetrieveUpdateDestroyAPIView</code>.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-table"></i> REST Principles Applied</h5>
+            <ul style="color:var(--text-muted);font-size:0.88rem;list-style:none;padding:0;">
+                <li class="mb-2">✅ Nouns in URLs (<code>/doctors/</code>, not <code>/get-doctors/</code>)</li>
+                <li class="mb-2">✅ HTTP verbs for actions (GET, POST, PUT, DELETE)</li>
+                <li class="mb-2">✅ Status codes (200, 201, 404, 400)</li>
+                <li class="mb-2">✅ Stateless (no session state)</li>
+                <li class="mb-2">✅ JSON responses</li>
+                <li class="mb-2">✅ Resource-based routing</li>
+            </ul>
+            <a href="/q11/doctors/" class="btn btn-primary-glow w-100 mt-2"><i class="bi bi-box-arrow-up-right"></i> Browsable API</a>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3">Doctor Records ({{ doctors|length }})</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-sm table-bordered">
+                    <thead><tr><th>ID</th><th>Name</th><th>Specialty</th><th>Hospital</th><th>City</th><th>Available</th></tr></thead>
+                    <tbody>
+                        {% for doc in doctors %}
+                        <tr>
+                            <td>{{ doc.id }}</td>
+                            <td>Dr. {{ doc.name }}</td>
+                            <td><span class="tag">{{ doc.specialty }}</span></td>
+                            <td>{{ doc.hospital|default:"—" }}</td>
+                            <td>{{ doc.city|default:"—" }}</td>
+                            <td>{% if doc.available %}<span style="color:var(--secondary);">Yes</span>{% else %}<span style="color:#ff6b7a;">No</span>{% endif %}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center" style="color:var(--text-muted);">No doctors. Use <a href="/q11/doctors/" style="color:var(--primary);">the API</a>.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

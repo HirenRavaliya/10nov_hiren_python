@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Q7 — Pagination{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q7 · Pagination in DRF</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">Paginated Doctor List</h1>
+    <p style="color:var(--text-muted);">Returns paginated results. Default: 3 per page. API uses <code>PageNumberPagination</code>.</p>
+</div>
+
+<div class="row justify-content-center mb-3">
+    <div class="col-auto">
+        <form class="d-flex gap-2 align-items-center" method="get" action="/q7/">
+            <label class="fw-500">Page size:</label>
+            <select name="page_size" class="form-select form-select-sm" style="width:80px;" onchange="this.form.submit()">
+
+                <option {% if page_size == 2 %}selected{% endif %}>2</option>
+                <option {% if page_size == 3 %}selected{% endif %}>3</option>
+                <option {% if page_size == 5 %}selected{% endif %}>5</option>
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+{% for doc in page_obj %}
+<div class="col-md-6 col-lg-4">
+    <div class="card-glass">
+        <div class="fw-600">Dr. {{ doc.name }}</div>
+        <div style="color:var(--primary);font-size:0.85rem;">{{ doc.specialty }}</div>
+        <div style="color:var(--text-muted);font-size:0.82rem;">{{ doc.city }}</div>
+    </div>
+</div>
+{% empty %}
+<div class="col-12"><div class="card-glass text-center"><p style="color:var(--text-muted);">No doctors. Add some via Q4 or Q5.</p></div></div>
+{% endfor %}
+</div>
+
+<nav aria-label="Pagination">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&page_size={{ page_size }}">&#8592; Prev</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}&page_size={{ page_size }}">{{ num }}</a>
+        </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&page_size={{ page_size }}">Next &#8594;</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<p class="text-center" style="color:var(--text-muted);">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} | Total: {{ total }} doctors</p>
+<p class="text-center"><a href="/q7/doctors/?page=1" style="color:var(--primary);">&#8594; Also see JSON API with pagination</a></p>
+{% endblock %}

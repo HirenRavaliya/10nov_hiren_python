@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Q21 — Stripe Doctor Appointments{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q21 · Payment Integration (Stripe)</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">💳 Book Doctor Appointment</h1>
+    <p style="color:var(--text-muted);">Pay for doctor appointments via Stripe Checkout.</p>
+</div>
+
+{% if not stripe_configured %}
+<div class="alert" style="background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.4);border-radius:10px;">
+    ⚠️ Stripe not configured. Running in demo mode. Add <code>STRIPE_SECRET_KEY</code> and <code>STRIPE_PUBLISHABLE_KEY</code> to .env
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-calendar-plus"></i> Book Appointment</h5>
+            <form method="post" action="/q21/book/">
+                {% csrf_token %}
+                <div class="mb-2"><label class="form-label">Your Name</label><input type="text" name="patient_name" class="form-control" placeholder="Patient Name" required></div>
+                <div class="mb-2"><label class="form-label">Email</label><input type="email" name="patient_email" class="form-control" placeholder="patient@email.com" required></div>
+                <div class="mb-2">
+                    <label class="form-label">Select Doctor</label>
+                    <select name="doctor_name" id="doctorSelect" class="form-select" onchange="updateFee(this)" required>
+                        <option value="">-- Choose Doctor --</option>
+                        {% for doc in doctors %}
+                        <option value="{{ doc.name }}" data-specialty="{{ doc.specialty }}" data-fee="{{ doc.fee }}">{{ doc.name }} — {{ doc.specialty }} (₹{{ doc.fee }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="hidden" name="doctor_specialty" id="doctorSpecialty" value="">
+                <input type="hidden" name="amount" id="doctorAmount" value="500">
+                <div class="mb-2"><label class="form-label">Date</label><input type="date" name="appointment_date" class="form-control" required></div>
+                <div class="mb-3 p-3" style="background:rgba(108,99,255,0.1);border-radius:10px;text-align:center;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);">CONSULTATION FEE</div>
+                    <div id="feeDisplay" style="font-size:2rem;font-weight:700;color:var(--secondary);">₹500</div>
+                </div>
+                <button type="submit" class="btn btn-primary-glow w-100">
+                    <i class="bi bi-credit-card"></i> {% if stripe_configured %}Pay with Stripe{% else %}Book (Demo){% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-receipt"></i> Bookings ({{ appointments|length }})</h5>
+            {% for appt in appointments %}
+            <div style="border:1px solid var(--border);border-radius:10px;padding:0.75rem;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div class="fw-600">{{ appt.patient_name }}</div>
+                    <div style="color:var(--primary);font-size:0.85rem;">{{ appt.doctor_name }} — {{ appt.doctor_specialty }}</div>
+                    <div style="color:var(--text-muted);font-size:0.8rem;">{{ appt.appointment_date }} | ₹{{ appt.amount }}</div>
+                </div>
+                <div>
+                    {% if appt.status == 'paid' %}
+                    <span class="badge" style="background:rgba(62,207,207,0.2);color:var(--secondary);border:1px solid var(--secondary);">✅ Paid</span>
+                    {% elif appt.status == 'pending' %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                    {% else %}
+                    <span class="badge bg-danger">Failed</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p style="color:var(--text-muted);">No appointments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function updateFee(select) {
+    var option = select.options[select.selectedIndex];
+    var fee = option.getAttribute('data-fee') || 500;
+    var specialty = option.getAttribute('data-specialty') || '';
+    document.getElementById('doctorAmount').value = fee;
+    document.getElementById('doctorSpecialty').value = specialty;
+    document.getElementById('feeDisplay').textContent = '₹' + fee;
+}
+</script>
+{% endblock %}

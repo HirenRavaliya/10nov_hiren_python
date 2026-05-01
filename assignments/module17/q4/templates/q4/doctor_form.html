@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Q4 — Add Doctor via POST{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q4 · Requests and Responses in DRF</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">Add Doctor — POST Request</h1>
+    <p style="color:var(--text-muted);">HTML form that submits a POST request to add a doctor to the database.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-person-plus"></i> Add New Doctor</h5>
+            <form method="post" action="/q4/">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-500">Full Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Rahul Mehta" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-500">Specialty</label>
+                    <input type="text" name="specialty" class="form-control" placeholder="e.g. Cardiologist" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-500">Email</label>
+                    <input type="email" name="contact_email" class="form-control" placeholder="doctor@hospital.com" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-500">Phone</label>
+                    <input type="text" name="contact_phone" class="form-control" placeholder="+91 9876543210" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-500">Hospital</label>
+                    <input type="text" name="hospital" class="form-control" placeholder="Apollo Hospital">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-500">City</label>
+                    <input type="text" name="city" class="form-control" placeholder="Mumbai">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="available" class="form-check-input" id="available" checked>
+                    <label class="form-check-label" for="available">Available for appointments</label>
+                </div>
+                <button type="submit" class="btn btn-primary-glow w-100">
+                    <i class="bi bi-send"></i> Submit (POST)
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card-glass h-100">
+            <h5 class="fw-600 mb-3"><i class="bi bi-list-ul"></i> Doctors in Database ({{ doctors|length }})</h5>
+            {% for doc in doctors %}
+            <div style="border:1px solid var(--border);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="fw-600">Dr. {{ doc.name }}</div>
+                        <div style="color:var(--primary);font-size:0.82rem;">{{ doc.specialty }}</div>
+                        <div style="color:var(--text-muted);font-size:0.8rem;">{{ doc.contact_email }} | {{ doc.contact_phone }}</div>
+                    </div>
+                    {% if doc.available %}
+                        <span class="badge" style="background:rgba(62,207,207,0.2);color:var(--secondary);border:1px solid var(--secondary);">Available</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Unavailable</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p style="color:var(--text-muted);">No doctors yet. Use the form to add one.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

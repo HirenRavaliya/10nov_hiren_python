@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Q1 — Random Joke API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q1 · Introduction to APIs</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">Random Joke Fetcher</h1>
+    <p style="color:var(--text-muted);">Fetches a random joke from the <strong>Official Joke API</strong> — a free public REST API.</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        {% if joke %}
+        <div class="card-glass text-center" id="joke-card">
+            <div style="font-size:3rem; margin-bottom:1rem;">😂</div>
+            <h4 class="fw-600" style="color:var(--secondary);">{{ joke.setup }}</h4>
+            <div id="punchline" style="display:none; margin-top:1rem;">
+                <hr style="border-color:var(--border);">
+                <p class="fs-5 fw-500" style="color:var(--primary);">{{ joke.punchline }}</p>
+            </div>
+            <button class="btn btn-primary-glow mt-3" onclick="document.getElementById('punchline').style.display='block'; this.style.display='none';">
+                🥁 Reveal Punchline
+            </button>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="/q1/" class="btn btn-primary-glow">
+                <i class="bi bi-arrow-clockwise"></i> Get Another Joke
+            </a>
+        </div>
+
+        <div class="card-glass mt-4">
+            <h6 class="fw-600 mb-2"><i class="bi bi-code-slash"></i> How It Works</h6>
+            <pre>GET https://official-joke-api.appspot.com/random_joke
+
+Response:
+{
+  "setup": "Why did the scarecrow win an award?",
+  "punchline": "Because he was outstanding in his field."
+}</pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

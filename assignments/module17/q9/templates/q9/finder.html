@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Q9 — Doctor Finder App{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q9 · Project Setup — doctor_finder</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">🔍 Doctor Finder</h1>
+    <p style="color:var(--text-muted);">App setup with models, serializers, views — with search by specialty & city.</p>
+</div>
+
+<div class="card-glass mb-4">
+    <form method="get" action="/q9/" class="row g-3">
+        <div class="col-md-5">
+            <label class="form-label fw-500">Specialty</label>
+            <input type="text" name="specialty" class="form-control" placeholder="e.g. Cardiologist" value="{{ selected_specialty }}">
+        </div>
+        <div class="col-md-5">
+            <label class="form-label fw-500">City</label>
+            <input type="text" name="city" class="form-control" placeholder="e.g. Mumbai" value="{{ selected_city }}">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary-glow w-100"><i class="bi bi-search"></i> Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3">
+    {% for doc in doctors %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card-glass">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;">{{ doc.name|first }}</div>
+                <div>
+                    <div class="fw-600">Dr. {{ doc.name }}</div>
+                    <div style="color:var(--primary);font-size:0.8rem;">{{ doc.specialty }}</div>
+                </div>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-muted);">
+                <div><i class="bi bi-hospital"></i> {{ doc.hospital|default:"—" }}</div>
+                <div><i class="bi bi-geo-alt"></i> {{ doc.city|default:"—" }}</div>
+                <div><i class="bi bi-envelope"></i> {{ doc.contact_email }}</div>
+            </div>
+            {% if doc.available %}<span class="badge mt-2" style="background:rgba(62,207,207,0.2);color:var(--secondary);border:1px solid var(--secondary);">Available</span>{% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><div class="card-glass text-center"><p style="color:var(--text-muted);">No doctors match your search. <a href="/q9/" style="color:var(--primary);">Clear filters</a></p></div></div>
+    {% endfor %}
+</div>
+
+<p class="mt-4 text-center"><a href="/q9/api/doctors/" style="color:var(--primary);">&#8594; JSON API (supports ?search=...)</a></p>
+{% endblock %}

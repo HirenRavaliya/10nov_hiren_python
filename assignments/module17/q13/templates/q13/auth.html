@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Q13 — Token Authentication{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q13 · Authentication &amp; Authorization API</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">Token-Based Authentication</h1>
+    <p style="color:var(--text-muted);">DRF TokenAuthentication — restricted endpoints require Bearer token.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-key"></i> Get Auth Token</h5>
+            {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+            {% if token %}
+            <div class="alert" style="background:rgba(62,207,207,0.1);border:1px solid var(--secondary);border-radius:10px;">
+                <div class="fw-600 mb-1" style="color:var(--secondary);">✅ Token Obtained!</div>
+                <code style="word-break:break-all;color:var(--primary);">{{ token }}</code>
+            </div>
+            <div class="mt-2" style="font-size:0.82rem;color:var(--text-muted);">Use in requests:<br>
+                <code>Authorization: Token {{ token }}</code></div>
+            {% endif %}
+            <form method="post" action="/q13/" class="mt-3">
+                {% csrf_token %}
+                <div class="mb-2"><input type="text" name="username" class="form-control" placeholder="Username" required></div>
+                <div class="mb-2"><input type="password" name="password" class="form-control" placeholder="Password" required></div>
+                <button type="submit" class="btn btn-primary-glow w-100"><i class="bi bi-shield-lock"></i> Get Token</button>
+            </form>
+            <p class="mt-2" style="font-size:0.8rem;color:var(--text-muted);">Create superuser: <code>python manage.py createsuperuser</code></p>
+        </div>
+
+        <div class="card-glass mt-3">
+            <h6 class="fw-600 mb-2">Endpoint Permissions</h6>
+            <table class="table table-dark table-sm">
+                <thead><tr><th>Endpoint</th><th>Auth Required</th></tr></thead>
+                <tbody>
+                    <tr><td><code>GET /q13/public/doctors/</code></td><td><span class="badge bg-success">Public</span></td></tr>
+                    <tr><td><code>GET /q13/doctors/</code></td><td><span class="badge bg-success">Public</span></td></tr>
+                    <tr><td><code>POST /q13/doctors/</code></td><td><span class="badge bg-danger">Token Required</span></td></tr>
+                    <tr><td><code>PUT/DEL /q13/doctors/&lt;id&gt;/</code></td><td><span class="badge bg-danger">Token Required</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3"><i class="bi bi-code-slash"></i> How to Use Token Auth</h5>
+            <pre style="font-size:0.8rem;"># Step 1: Get token
+curl -X POST /q13/token/ \
+  -d '{"username":"admin","password":"pass"}'
+
+# Response:
+{"token": "abc123...", "username": "admin"}
+
+# Step 2: Use token in protected requests
+curl /q13/doctors/ \
+  -H "Authorization: Token abc123..."
+
+# Step 3: POST new doctor (protected)
+curl -X POST /q13/doctors/ \
+  -H "Authorization: Token abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Dr. Smith","specialty":"ENT",...}'</pre>
+            <h6 class="fw-600 mt-3">Doctors ({{ doctors|length }})</h6>
+            {% for doc in doctors %}
+            <div style="border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:6px;font-size:0.85rem;">
+                <strong>Dr. {{ doc.name }}</strong> — <span style="color:var(--primary);">{{ doc.specialty }}</span>
+                <div style="color:var(--text-muted);font-size:0.78rem;">{{ doc.contact_email }}</div>
+            </div>
+            {% empty %}
+            <p style="color:var(--text-muted);">No doctors. Use authenticated POST to add.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

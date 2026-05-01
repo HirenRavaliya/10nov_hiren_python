@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Module 17 — Django API Labs{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #4F46E5;
+            --secondary: #3ECFCF;
+            --bg-dark: #0F0F1A;
+            --bg-card: #1A1A2E;
+            --bg-card2: #16213E;
+            --text-main: #E8E8F0;
+            --text-muted: #8888AA;
+            --border: rgba(108,99,255,0.25);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(26,26,46,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-link { color: var(--text-muted) !important; font-weight: 500; transition: color 0.2s; }
+        .nav-link:hover { color: var(--primary) !important; }
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+        }
+        .card-glass {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card-glass:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(108,99,255,0.15);
+        }
+        .btn-primary-glow {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108,99,255,0.4);
+            color: #fff;
+        }
+        .tag {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 100px;
+            background: rgba(108,99,255,0.18);
+            color: var(--primary);
+            border: 1px solid rgba(108,99,255,0.3);
+        }
+        footer {
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        .form-control, .form-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 10px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--primary);
+            color: var(--text-main);
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.2);
+        }
+        .form-control::placeholder { color: var(--text-muted); }
+        .alert { border-radius: 12px; border: none; }
+        pre {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        table { color: var(--text-main); }
+        .table-dark { --bs-table-bg: var(--bg-card2); }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚡ Module 17</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navmenu">
+            <ul class="navbar-nav ms-auto gap-1">
+                {% for i in "123456789" %}{% endfor %}
+                <li class="nav-item"><a class="nav-link" href="/q1/">Q1 Joke</a></li>
+                <li class="nav-item"><a class="nav-link" href="/q2/">Q2 Setup</a></li>
+                <li class="nav-item"><a class="nav-link" href="/q3/doctors/">Q3 Serial</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Doctor APIs</a>
+                    <ul class="dropdown-menu" style="background:var(--bg-card);border:1px solid var(--border);">
+                        <li><a class="dropdown-item text-light" href="/q4/doctors/">Q4 POST</a></li>
+                        <li><a class="dropdown-item text-light" href="/q5/doctors/">Q5 CRUD CBV</a></li>
+                        <li><a class="dropdown-item text-light" href="/q6/doctors/">Q6 Routing</a></li>
+                        <li><a class="dropdown-item text-light" href="/q7/doctors/">Q7 Pagination</a></li>
+                        <li><a class="dropdown-item text-light" href="/q8/doctors/">Q8 SQLite</a></li>
+                        <li><a class="dropdown-item text-light" href="/q9/doctors/">Q9 Setup</a></li>
+                        <li><a class="dropdown-item text-light" href="/q11/doctors/">Q11 RESTful</a></li>
+                        <li><a class="dropdown-item text-light" href="/q12/doctors/">Q12 CRUD</a></li>
+                        <li><a class="dropdown-item text-light" href="/q13/doctors/">Q13 Auth</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">API Labs</a>
+                    <ul class="dropdown-menu" style="background:var(--bg-card);border:1px solid var(--border);">
+                        <li><a class="dropdown-item text-light" href="/q14/">Q14 Weather</a></li>
+                        <li><a class="dropdown-item text-light" href="/q15/">Q15 Geocode</a></li>
+                        <li><a class="dropdown-item text-light" href="/q16/">Q16 GitHub</a></li>
+                        <li><a class="dropdown-item text-light" href="/q17/">Q17 Twitter</a></li>
+                        <li><a class="dropdown-item text-light" href="/q18/">Q18 Countries</a></li>
+                        <li><a class="dropdown-item text-light" href="/q19/">Q19 Email</a></li>
+                        <li><a class="dropdown-item text-light" href="/q20/">Q20 OTP SMS</a></li>
+                        <li><a class="dropdown-item text-light" href="/q21/">Q21 Stripe</a></li>
+                        <li><a class="dropdown-item text-light" href="/q22/">Q22 Maps</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    Module 17 — Django API Labs &nbsp;|&nbsp; Built with Django &amp; DRF
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

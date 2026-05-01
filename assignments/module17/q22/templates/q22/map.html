@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Q22 — Google Maps Doctor Locations{% endblock %}
+{% block extra_head %}
+{% if api_key and api_key != 'your_google_maps_api_key_here' %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap" async defer></script>
+{% endif %}
+<style>
+#map { height: 500px; border-radius: 12px; background: rgba(255,255,255,0.04); }
+.doctor-sidebar { max-height: 500px; overflow-y: auto; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q22 · Google Maps API Integration</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">🗺️ Doctor Locations Map</h1>
+    <p style="color:var(--text-muted);">Find doctors in your city on an interactive Google Map.</p>
+</div>
+
+<div class="row g-3 mb-3 align-items-center">
+    <div class="col-auto">
+        <form method="get" action="/q22/" class="d-flex gap-2">
+            <input type="text" name="city" class="form-control" placeholder="Filter by city" value="{{ selected_city }}">
+            <button type="submit" class="btn btn-primary-glow" style="white-space:nowrap;"><i class="bi bi-search"></i> Filter</button>
+            {% if selected_city %}<a href="/q22/" class="btn" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-muted);">Clear</a>{% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        {% if api_key and api_key != 'your_google_maps_api_key_here' %}
+        <div id="map"></div>
+        {% else %}
+        <div class="card-glass text-center" style="height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="font-size:3rem;">🗺️</div>
+            <h5 class="fw-600 mt-2">Google Maps API Key Required</h5>
+            <p style="color:var(--text-muted);">Add <code>GOOGLE_MAPS_API_KEY</code> to .env to enable the map.</p>
+            <p style="color:var(--text-muted);font-size:0.85rem;">Doctors are still stored and visible in the list →</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card-glass doctor-sidebar">
+            <h5 class="fw-600 mb-3">Doctors ({{ doctors|length }})</h5>
+            {% for doc in doctors %}
+            <div class="doctor-marker" style="border:1px solid var(--border);border-radius:10px;padding:0.65rem;margin-bottom:0.5rem;cursor:pointer;" onclick="focusDoctor({{ doc.latitude }}, {{ doc.longitude }}, '{{ doc.name }}')">
+                <div class="fw-600" style="font-size:0.9rem;">Dr. {{ doc.name }}</div>
+                <div style="color:var(--primary);font-size:0.78rem;">{{ doc.specialty }}</div>
+                <div style="color:var(--text-muted);font-size:0.76rem;"><i class="bi bi-hospital"></i> {{ doc.hospital }}</div>
+                <div style="color:var(--text-muted);font-size:0.76rem;"><i class="bi bi-geo-alt"></i> {{ doc.address }}</div>
+            </div>
+            {% empty %}
+            <p style="color:var(--text-muted);">No doctors added yet. Use the form below to add.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Doctor Form -->
+<div class="card-glass mt-4">
+    <h5 class="fw-600 mb-3"><i class="bi bi-plus-circle"></i> Add Doctor Location</h5>
+    <form method="post" action="/q22/" class="row g-3">
+        {% csrf_token %}
+        <div class="col-md-3"><input type="text" name="name" class="form-control" placeholder="Doctor Name" required></div>
+        <div class="col-md-3"><input type="text" name="specialty" class="form-control" placeholder="Specialty" required></div>
+        <div class="col-md-3"><input type="text" name="hospital" class="form-control" placeholder="Hospital/Clinic" required></div>
+        <div class="col-md-3"><input type="text" name="city" class="form-control" placeholder="City" required></div>
+        <div class="col-md-6"><input type="text" name="address" class="form-control" placeholder="Full Address" required></div>
+        <div class="col-md-2"><input type="number" name="latitude" class="form-control" placeholder="Latitude" step="any" required></div>
+        <div class="col-md-2"><input type="number" name="longitude" class="form-control" placeholder="Longitude" step="any" required></div>
+        <div class="col-md-2"><input type="text" name="contact_phone" class="form-control" placeholder="Phone"></div>
+        <div class="col-auto d-flex align-items-center gap-2">
+            <input type="checkbox" name="available" class="form-check-input" id="av22" checked>
+            <label class="form-check-label" for="av22">Available</label>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary-glow"><i class="bi bi-pin-map"></i> Add to Map</button>
+        </div>
+    </form>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">💡 Use Q15 (Geocoder) to find latitude/longitude for an address.</p>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+var markers = [];
+var map;
+var doctors = [
+    {% for doc in doctors %}
+    {lat: {{ doc.latitude }}, lng: {{ doc.longitude }}, name: "Dr. {{ doc.name }}", specialty: "{{ doc.specialty }}", hospital: "{{ doc.hospital }}"},
+    {% endfor %}
+];
+
+function initMap() {
+    var center = doctors.length ? {lat: doctors[0].lat, lng: doctors[0].lng} : {lat: 19.0760, lng: 72.8777};
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12, center: center,
+        styles: [{elementType: 'geometry', stylers: [{color: '#1a1a2e'}]},
+                 {elementType: 'labels.text.fill', stylers: [{color: '#8888aa'}]},
+                 {elementType: 'labels.text.stroke', stylers: [{color: '#0f0f1a'}]}]
+    });
+    var infoWindow = new google.maps.InfoWindow();
+    doctors.forEach(function(doc) {
+        var marker = new google.maps.Marker({
+            position: {lat: doc.lat, lng: doc.lng},
+            map: map,
+            title: 'Dr. ' + doc.name,
+            icon: {url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'}
+        });
+        marker.addListener('click', function() {
+            infoWindow.setContent('<div style="color:#000;"><b>Dr. ' + doc.name + '</b><br>' + doc.specialty + '<br>' + doc.hospital + '</div>');
+            infoWindow.open(map, marker);
+        });
+        markers.push({marker: marker, name: doc.name});
+    });
+}
+
+function focusDoctor(lat, lng, name) {
+    if (map) {
+        map.setCenter({lat: lat, lng: lng});
+        map.setZoom(16);
+    }
+}
+</script>
+{% endblock %}

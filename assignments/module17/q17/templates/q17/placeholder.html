@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Q17 — Twitter API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q17 · Twitter API Integration</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">𝕏 Twitter / X API</h1>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card-glass text-center">
+            <div style="font-size:4rem;">🚧</div>
+            <h4 class="fw-600 mt-3">Implementation Pending</h4>
+            <p style="color:var(--text-muted);">Twitter API v2 now requires a <strong>paid subscription</strong> (Basic plan: $100/month) for timeline access.</p>
+            <div class="mt-3 text-start">
+                <h6 class="fw-600">Required .env Key:</h6>
+                <pre>TWITTER_BEARER_TOKEN=your_bearer_token_here</pre>
+                <h6 class="fw-600 mt-3">API Endpoint to Use:</h6>
+                <pre>GET https://api.twitter.com/2/users/:id/tweets?max_results=5
+Authorization: Bearer {BEARER_TOKEN}</pre>
+                <h6 class="fw-600 mt-3">Implementation Code:</h6>
+                <pre>import requests
+headers = {"Authorization": f"Bearer {settings.TWITTER_BEARER_TOKEN}"}
+# Get user ID from username
+user_resp = requests.get(
+    f"https://api.twitter.com/2/users/by/username/{{username}}",
+    headers=headers
+)
+user_id = user_resp.json()['data']['id']
+# Get tweets
+tweets_resp = requests.get(
+    f"https://api.twitter.com/2/users/{{user_id}}/tweets?max_results=5",
+    headers=headers
+)</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

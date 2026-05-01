@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Q12 — Full CRUD API{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <span class="hero-badge">Q12 · CRUD API (Create, Read, Update, Delete)</span>
+    <h1 class="fw-700" style="font-size:2.2rem;">Doctor Profiles CRUD Dashboard</h1>
+    <p style="color:var(--text-muted);">Full Create, Read, Update, Delete for doctor profiles via both UI and API.</p>
+</div>
+
+<div class="row g-4">
+    <!-- Form Panel -->
+    <div class="col-lg-4">
+        <div class="card-glass">
+            <h5 class="fw-600 mb-3">{% if edit_doctor %}<i class="bi bi-pencil"></i> Edit Doctor{% else %}<i class="bi bi-plus-circle"></i> Create Doctor{% endif %}</h5>
+            <form method="post" action="/q12/">
+                {% csrf_token %}
+                <input type="hidden" name="action_type" value="{% if edit_doctor %}update{% else %}create{% endif %}">
+                {% if edit_doctor %}<input type="hidden" name="pk" value="{{ edit_doctor.pk }}">{% endif %}
+                <div class="mb-2"><input type="text" name="name" class="form-control" placeholder="Full Name" value="{% if edit_doctor %}{{ edit_doctor.name }}{% endif %}" required></div>
+                <div class="mb-2"><input type="text" name="specialty" class="form-control" placeholder="Specialty" value="{% if edit_doctor %}{{ edit_doctor.specialty }}{% endif %}" required></div>
+                <div class="mb-2"><input type="email" name="contact_email" class="form-control" placeholder="Email" value="{% if edit_doctor %}{{ edit_doctor.contact_email }}{% endif %}" required></div>
+                <div class="mb-2"><input type="text" name="contact_phone" class="form-control" placeholder="Phone" value="{% if edit_doctor %}{{ edit_doctor.contact_phone }}{% endif %}" required></div>
+                <div class="mb-2"><input type="text" name="hospital" class="form-control" placeholder="Hospital" value="{% if edit_doctor %}{{ edit_doctor.hospital }}{% endif %}"></div>
+                <div class="mb-2"><input type="text" name="city" class="form-control" placeholder="City" value="{% if edit_doctor %}{{ edit_doctor.city }}{% endif %}"></div>
+                <div class="mb-2 form-check">
+                    <input type="checkbox" name="available" class="form-check-input" id="av12" {% if not edit_doctor or edit_doctor.available %}checked{% endif %}>
+                    <label class="form-check-label" for="av12">Available</label>
+                </div>
+                <button type="submit" class="btn btn-primary-glow w-100">{% if edit_doctor %}💾 Update{% else %}➕ Create{% endif %}</button>
+                {% if edit_doctor %}<a href="/q12/" class="btn w-100 mt-2" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-muted);">Cancel</a>{% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- List Panel -->
+    <div class="col-lg-8">
+        <div class="card-glass">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-600 mb-0">All Doctors ({{ doctors|length }})</h5>
+                <a href="/q12/doctors/" class="btn btn-sm" style="background:rgba(108,99,255,0.15);color:var(--primary);border:1px solid var(--border);">JSON API</a>
+            </div>
+            {% for doc in doctors %}
+            <div style="border:1px solid var(--border);border-radius:10px;padding:0.75rem;margin-bottom:0.6rem;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-600">Dr. {{ doc.name }}</span>
+                        <span class="tag ms-2">{{ doc.specialty }}</span>
+                        <div style="color:var(--text-muted);font-size:0.8rem;">{{ doc.contact_email }} | {{ doc.city }}</div>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="/q12/?edit={{ doc.pk }}" class="btn btn-sm" style="background:rgba(108,99,255,0.2);color:var(--primary);border:1px solid var(--border);">✏️</a>
+                        <form method="post" action="/q12/" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action_type" value="delete">
+                            <input type="hidden" name="pk" value="{{ doc.pk }}">
+                            <button type="submit" class="btn btn-sm" style="background:rgba(220,53,69,0.2);color:#ff6b7a;border:1px solid rgba(220,53,69,0.4);" onclick="return confirm('Delete?')">🗑️</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color:var(--text-muted);">No doctors yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
