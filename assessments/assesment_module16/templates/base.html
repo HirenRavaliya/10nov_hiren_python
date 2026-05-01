@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}WriteSphere — Where Stories Come Alive{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}WriteSphere is a premium blogging platform where writers share ideas, connect with readers, and grow their audience.{% endblock %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="{% url 'blog:post_list' %}" class="navbar-brand">
+          WriteSphere<span></span>
+        </a>
+
+        <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+
+        <ul class="navbar-nav" id="navMenu" role="menubar">
+          <li role="none"><a href="{% url 'blog:post_list' %}" role="menuitem">Explore</a></li>
+          {% if user.is_authenticated %}
+            {% if user.is_author %}
+              <li role="none"><a href="{% url 'blog:my_posts' %}" role="menuitem">My Posts</a></li>
+            {% endif %}
+            <li role="none"><a href="{% url 'accounts:profile' username=user.username %}" role="menuitem">Profile</a></li>
+          {% endif %}
+        </ul>
+
+        <div class="navbar-actions">
+          {% if user.is_authenticated %}
+            {% if user.is_author %}
+              <a href="{% url 'blog:post_create' %}" class="btn btn-outline btn-sm">+ New Post</a>
+            {% endif %}
+            <a href="{% url 'accounts:logout' %}" class="btn btn-primary btn-sm">Log Out</a>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">Log In</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">Get Started →</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MESSAGES -->
+  {% if messages %}
+    <div class="alert-container" role="alert" aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% elif message.tags == 'warning' %}⚠{% else %}ℹ{% endif %}
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand">WriteSphere<span></span></div>
+          <p class="footer-desc">A premium platform for writers and readers who love thoughtful, long-form content. Share your story with the world.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Platform</div>
+          <ul class="footer-links">
+            <li><a href="{% url 'blog:post_list' %}">Explore Posts</a></li>
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'blog:post_create' %}">Write a Post</a></li>
+              <li><a href="{% url 'blog:my_posts' %}">My Posts</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Account</div>
+          <ul class="footer-links">
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'accounts:profile' username=user.username %}">My Profile</a></li>
+              <li><a href="{% url 'accounts:edit_profile' %}">Edit Profile</a></li>
+              <li><a href="{% url 'accounts:logout' %}">Log Out</a></li>
+            {% else %}
+              <li><a href="{% url 'accounts:login' %}">Log In</a></li>
+              <li><a href="{% url 'accounts:register' %}">Register</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Admin</div>
+          <ul class="footer-links">
+            {% if user.is_staff %}
+              <li><a href="/admin/">Admin Panel</a></li>
+            {% endif %}
+            <li><a href="{% url 'blog:post_list' %}">Latest Posts</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 WriteSphere. Built with Django.</span>
+        <span>Where stories come alive.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

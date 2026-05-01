@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Post — WriteSphere{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="confirm-delete-card reveal">
+    <div class="confirm-delete-icon">🗑️</div>
+    <h1 class="confirm-delete-title">Delete This Post?</h1>
+    <p class="confirm-delete-text">
+      You're about to permanently delete <strong>"{{ post.title }}"</strong>. This action cannot be undone and all associated comments and likes will also be removed.
+    </p>
+    <div class="confirm-delete-actions">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-lg">Yes, Delete</button>
+      </form>
+      <a href="{{ post.get_absolute_url }}" class="btn btn-ghost btn-lg">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

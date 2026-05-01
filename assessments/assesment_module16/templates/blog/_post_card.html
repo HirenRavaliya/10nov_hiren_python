@@ -1,0 +1,36 @@
+{% load static %}
+<article class="post-card reveal">
+  <div class="post-card-image-wrap">
+    {% if post.cover_image %}
+      <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="post-card-image" loading="lazy" />
+    {% else %}
+      <div class="post-card-placeholder">✦</div>
+    {% endif %}
+  </div>
+  <div class="post-card-body">
+    <div class="post-card-meta">
+      {% if post.category %}
+        <span class="post-card-category">{{ post.category.name }}</span>
+      {% endif %}
+      <span class="post-card-date">{{ post.created_at|date:"M d, Y" }}</span>
+    </div>
+    <h2 class="post-card-title">
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    </h2>
+    <p class="post-card-excerpt">{{ post.content|truncatechars:120 }}</p>
+    <div class="post-card-footer">
+      <div class="post-card-author">
+        {% if post.author.avatar %}
+          <img src="{{ post.author.avatar.url }}" alt="{{ post.author.username }}" class="post-card-author-avatar" />
+        {% else %}
+          <div class="post-card-author-avatar-placeholder">{{ post.author.username|first|upper }}</div>
+        {% endif %}
+        <a href="{% url 'accounts:profile' username=post.author.username %}" class="post-card-author-name">{{ post.author.username }}</a>
+      </div>
+      <div class="post-card-stats">
+        <span class="post-card-stat">♥ {{ post.get_likes_count }}</span>
+        <span class="post-card-stat">💬 {{ post.get_comments_count }}</span>
+      </div>
+    </div>
+  </div>
+</article>

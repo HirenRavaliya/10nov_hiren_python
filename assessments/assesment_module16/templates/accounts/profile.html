@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }} — WriteSphere{% endblock %}
+{% block meta_description %}Explore posts and articles by {{ profile_user.username }} on WriteSphere.{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:48px;padding-bottom:80px;">
+
+  <!-- Profile Hero -->
+  <div class="profile-hero reveal">
+    {% if profile_user.avatar %}
+      <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}" class="profile-avatar" />
+    {% else %}
+      <div class="profile-avatar-placeholder">{{ profile_user.username|first|upper }}</div>
+    {% endif %}
+    <div style="flex:1;position:relative;z-index:1;">
+      <div class="profile-username">
+        {{ profile_user.get_full_name|default:profile_user.username }}
+        <span style="
+          display:inline-block;
+          margin-left:10px;
+          font-size:0.65rem;
+          font-weight:700;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          padding:3px 10px;
+          border-radius:9999px;
+          vertical-align:middle;
+          background:{% if profile_user.get_role == 'Admin' %}#e53e3e{% elif profile_user.get_role == 'Author' %}rgba(255,255,255,0.2){% else %}rgba(255,255,255,0.1){% endif %};
+          color:#fff;
+          border:1px solid rgba(255,255,255,0.3);
+        ">{{ profile_user.get_role }}</span>
+      </div>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.5);">@{{ profile_user.username }}</p>
+      {% if profile_user.bio %}
+        <p class="profile-bio">{{ profile_user.bio }}</p>
+      {% endif %}
+      {% if profile_user.website %}
+        <a href="{{ profile_user.website }}" class="profile-bio" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;opacity:0.6;">
+          {{ profile_user.website }}
+        </a>
+      {% endif %}
+      <div class="profile-stats">
+        <div>
+          <div class="profile-stat-value">{{ posts_count }}</div>
+          <div class="profile-stat-label">Posts</div>
+        </div>
+        <div>
+          <div class="profile-stat-value">{{ followers_count }}</div>
+          <div class="profile-stat-label">Followers</div>
+        </div>
+        <div>
+          <div class="profile-stat-value">{{ following_count }}</div>
+          <div class="profile-stat-label">Following</div>
+        </div>
+      </div>
+    </div>
+    <!-- Profile Actions -->
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+      {% if user.is_authenticated %}
+        {% if user == profile_user %}
+          <a href="{% url 'accounts:edit_profile' %}" class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,0.3);color:#fff;">Edit Profile</a>
+        {% else %}
+          <a href="{% url 'accounts:follow_toggle' username=profile_user.username %}" 
+             class="btn {% if is_following %}btn-ghost{% else %}btn-primary{% endif %} btn-sm"
+             style="{% if is_following %}border-color:rgba(255,255,255,0.3);color:#fff;background:transparent;{% endif %}">
+            {% if is_following %}✓ Following{% else %}+ Follow{% endif %}
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Author's Posts -->
+  <div style="margin-top:40px;">
+    <h2 style="font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:28px;" class="reveal">
+      {% if user == profile_user %}My Posts{% else %}Posts by {{ profile_user.username }}{% endif %}
+    </h2>
+
+    {% if posts %}
+      <div class="posts-grid">
+        {% for post in posts %}
+          {% include 'blog/_post_card.html' %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state reveal">
+        <div class="empty-state-icon">✍️</div>
+        <div class="empty-state-title">No published posts yet</div>
+        <p class="empty-state-text">
+          {% if user == profile_user %}Start writing your first post!{% else %}{{ profile_user.username }} hasn't published anything yet.{% endif %}
+        </p>
+        {% if user == profile_user %}
+          <a href="{% url 'blog:post_create' %}" class="btn btn-primary">Write a Post →</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

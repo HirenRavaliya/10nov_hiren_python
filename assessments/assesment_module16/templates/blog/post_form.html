@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if action == 'Edit' %}Edit Post{% else %}Write a New Post{% endif %} — WriteSphere{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="post-form-wrap">
+    <div class="post-form-card reveal">
+      <h1 class="post-form-title">{% if action == 'Edit' %}Edit Post ✏️{% else %}New Post ✦{% endif %}</h1>
+      <p class="post-form-subtitle">
+        {% if action == 'Edit' %}Update your post details below.{% else %}Share your thoughts, ideas, and stories with the world.{% endif %}
+      </p>
+
+      <form method="post" enctype="multipart/form-data" id="postForm" novalidate>
+        {% csrf_token %}
+
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label" for="id_title">Post Title *</label>
+          <input type="text" name="title" id="id_title" class="form-control" placeholder="A compelling headline..." value="{{ form.title.value|default:'' }}" required />
+          {% if form.title.errors %}<div class="form-error">{{ form.title.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Content -->
+        <div class="form-group">
+          <label class="form-label" for="id_content">Content *</label>
+          <textarea name="content" id="id_content" class="form-control post-content-editor" rows="16" placeholder="Start writing your story here..." required>{{ form.content.value|default:'' }}</textarea>
+          {% if form.content.errors %}<div class="form-error">{{ form.content.errors.0 }}</div>{% endif %}
+          <div class="form-help">Use blank lines to separate paragraphs. Basic formatting is supported.</div>
+        </div>
+
+        <!-- Two column: Category + Status -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="form-group">
+            <label class="form-label" for="id_category">Category</label>
+            <select name="category" id="id_category" class="form-control">
+              <option value="">-- No Category --</option>
+              {% for choice in form.category.field.queryset %}
+                <option value="{{ choice.pk }}" {% if form.category.value|stringformat:"s" == choice.pk|stringformat:"s" %}selected{% endif %}>{{ choice.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="id_status">Status</label>
+            <select name="status" id="id_status" class="form-control">
+              <option value="draft" {% if form.status.value == 'draft' or not form.status.value %}selected{% endif %}>Draft (private)</option>
+              <option value="published" {% if form.status.value == 'published' %}selected{% endif %}>Published (live)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label class="form-label" for="id_tags_input">Tags</label>
+          <input type="text" name="tags_input" id="id_tags_input" class="form-control" placeholder="python, django, webdev..." value="{{ form.tags_input.value|default:'' }}" />
+          <div class="form-help">Separate tags with commas.</div>
+        </div>
+
+        <!-- Cover Image -->
+        <div class="form-group">
+          <label class="form-label" for="id_cover_image">Cover Image</label>
+          {% if post and post.cover_image %}
+            <div style="margin-bottom:12px;">
+              <img src="{{ post.cover_image.url }}" alt="Current cover" style="height:120px;object-fit:cover;border-radius:10px;display:block;" />
+              <p class="form-help">Current image. Upload a new one to replace it.</p>
+            </div>
+          {% endif %}
+          <input type="file" name="cover_image" id="id_cover_image" class="form-control" accept="image/*" />
+          <img id="coverPreview" style="display:none;margin-top:12px;max-height:200px;border-radius:10px;object-fit:cover;" alt="Preview" />
+          {% if form.cover_image.errors %}<div class="form-error">{{ form.cover_image.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Actions -->
+        <div class="post-form-actions">
+          <button type="submit" class="btn btn-primary btn-lg">
+            {% if action == 'Edit' %}Save Changes{% else %}Publish Post{% endif %} →
+          </button>
+          <a href="{% if post %}{{ post.get_absolute_url }}{% else %}{% url 'blog:my_posts' %}{% endif %}" class="btn btn-ghost btn-lg">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

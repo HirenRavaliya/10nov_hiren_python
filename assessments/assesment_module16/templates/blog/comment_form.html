@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Comment — WriteSphere{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-wrap" style="padding:60px 0;">
+    <div class="form-card reveal">
+      <h1 class="form-title">Edit Comment</h1>
+      <p class="form-subtitle">Update your comment below.</p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label" for="id_content">Your Comment</label>
+          <textarea name="content" id="id_content" class="form-control textarea" rows="5" required>{{ form.content.value }}</textarea>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:16px;">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a href="{{ comment.post.get_absolute_url }}" class="btn btn-ghost">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

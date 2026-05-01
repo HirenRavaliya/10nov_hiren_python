@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Posts — WriteSphere{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:48px;padding-bottom:80px;">
+  <div class="dashboard-header reveal">
+    <div>
+      <h1 class="dashboard-title">My Posts</h1>
+      <p class="text-muted text-small" style="margin-top:4px;">Manage your published and draft posts</p>
+    </div>
+    <a href="{% url 'blog:post_create' %}" class="btn btn-primary">+ New Post</a>
+  </div>
+
+  {% if posts %}
+    <div class="post-table-wrap reveal">
+      <table class="post-table" role="grid" aria-label="My posts">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Status</th>
+            <th scope="col">Likes</th>
+            <th scope="col">Comments</th>
+            <th scope="col">Date</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts %}
+            <tr>
+              <td>
+                <a href="{{ post.get_absolute_url }}" style="font-weight:600;color:var(--accent);">{{ post.title|truncatechars:50 }}</a>
+              </td>
+              <td>{{ post.category.name|default:"—" }}</td>
+              <td>
+                <span class="status-badge status-{{ post.status }}">{{ post.status }}</span>
+              </td>
+              <td>{{ post.get_likes_count }}</td>
+              <td>{{ post.get_comments_count }}</td>
+              <td style="white-space:nowrap;">{{ post.created_at|date:"M d, Y" }}</td>
+              <td>
+                <div style="display:flex;gap:8px;">
+                  <a href="{% url 'blog:post_edit' slug=post.slug %}" class="btn btn-ghost btn-sm">Edit</a>
+                  <a href="{% url 'blog:post_delete' slug=post.slug %}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state reveal">
+      <div class="empty-state-icon">✍️</div>
+      <div class="empty-state-title">No posts yet</div>
+      <p class="empty-state-text">Your writing journey starts here. Create your first post today!</p>
+      <a href="{% url 'blog:post_create' %}" class="btn btn-primary btn-lg">Write Your First Post →</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
