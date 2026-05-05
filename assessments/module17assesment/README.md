@@ -72,12 +72,12 @@ python manage.py runserver
 #### Create Student – Example payload
 ```json
 {
-  "first_name": "Alice",
-  "last_name": "Johnson",
-  "email": "alice@example.com",
+  "first_name": "Hiren ",
+  "last_name": "Ravaliya",
+  "email": "hirenravaliya45@gmail.com",
   "phone": "9876543210",
-  "gender": "F",
-  "date_of_birth": "2002-05-14",
+  "gender": "M",
+  "date_of_birth": "2003-04-11",
   "course_ids": [1, 2]
 }
 ```
