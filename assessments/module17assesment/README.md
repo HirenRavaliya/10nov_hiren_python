@@ -2,48 +2,13 @@
 
 A RESTful API built with **Django** and **Django REST Framework** to manage students and their enrolled courses.
 
----
+This project is deployed live on PythonAnywhere. The base API URL is:
 
-## 🚀 Quick Start
-
-### 1. Clone the repo
-```bash
-git clone <your-repo-url>
-cd module17assesment
-```
-
-### 2. Create & activate virtual environment
-```bash
-python3 -m venv venv
-source venv/bin/activate        # macOS / Linux
-venv\Scripts\activate           # Windows
-```
-
-### 3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure environment
-Copy `.env.example` → `.env` and fill in your values:
-```bash
-cp .env.example .env
-```
-
-### 5. Run migrations & create superuser
-```bash
-python manage.py migrate
-python manage.py createsuperuser
-```
-
-### 6. Start the dev server
-```bash
-python manage.py runserver
-```
+**[https://studentapi.pythonanywhere.com/api/students/](https://studentapi.pythonanywhere.com/api/students/)**
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Authentication (JWT)
 | Method | Endpoint | Description |
@@ -51,7 +16,7 @@ python manage.py runserver
 | POST | `/api/token/` | Obtain access + refresh tokens |
 | POST | `/api/token/refresh/` | Refresh access token |
 
-> Pass the access token in the `Authorization` header:  
+> Pass the access token in the `Authorization` header:
 > `Authorization: Bearer <access_token>`
 
 ---
@@ -106,13 +71,13 @@ python manage.py runserver
 
 ---
 
-## 🛡 Admin Panel
+## Admin Panel
 
-Visit [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) after creating a superuser.
+Visit [https://studentapi.pythonanywhere.com/admin/](https://studentapi.pythonanywhere.com/admin/) to access the Django admin panel.
 
 ---
 
-## 🗂 Project Structure
+## Project Structure
 
 ```
 module17assesment/
@@ -140,30 +105,33 @@ module17assesment/
 
 ---
 
-## 🌐 Deployment (PythonAnywhere)
+## Deployment (PythonAnywhere)
 
-1. Upload code or clone from GitHub.
-2. Create a virtual environment on PythonAnywhere and install `requirements.txt`.
-3. Set `DEBUG=False` and update `ALLOWED_HOSTS` with your PA domain in `.env`.
-4. Configure the WSGI file to point to `edutracker/wsgi.py`.
-5. Run `python manage.py collectstatic`.
+This project is live and accessible at **[https://studentapi.pythonanywhere.com/api/students/](https://studentapi.pythonanywhere.com/api/students/)**.
+
+It is hosted on PythonAnywhere with the following configuration:
+- Code is sourced from GitHub.
+- A virtual environment is set up on PythonAnywhere with all dependencies from `requirements.txt` installed.
+- `DEBUG=False` and `ALLOWED_HOSTS` is set to the PythonAnywhere domain in `.env`.
+- The WSGI file points to `edutracker/wsgi.py`.
+- Static files are collected using `python manage.py collectstatic`.
 
 ---
 
-## 🧪 Testing with Postman / curl
+## Testing with Postman / curl
 
 ```bash
 # Get JWT token
-curl -X POST http://127.0.0.1:8000/api/token/ \
+curl -X POST https://studentapi.pythonanywhere.com/api/token/ \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"your_password"}'
 
 # List students (authenticated)
-curl http://127.0.0.1:8000/api/students/ \
+curl https://studentapi.pythonanywhere.com/api/students/ \
   -H "Authorization: Bearer <access_token>"
 
 # Create a course
-curl -X POST http://127.0.0.1:8000/api/courses/ \
+curl -X POST https://studentapi.pythonanywhere.com/api/courses/ \
   -H "Authorization: Bearer <access_token>" \
   -H "Content-Type: application/json" \
   -d '{"name":"Django Basics","code":"DJ101","credits":3}'
