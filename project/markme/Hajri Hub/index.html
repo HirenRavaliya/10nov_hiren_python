@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hajri Hub – Premium AI Attendance System</title>
+    <meta name="description" content="Automate tracking with 99.9% accuracy. Secure facial identification and instant alerts for Hajri Hub.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Animation Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Three.js for 3D AI Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#040804',
+                        primaryGreen: '#82bc4a',
+                        secondaryGreen: '#5a8f2a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark text-white font-sans antialiased overflow-x-hidden">
+    <!-- Full-Screen Canvas Background -->
+    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-60"></canvas>
+    
+    <!-- Holographic Overlay Texture -->
+    <div class="fixed inset-0 z-[1] pointer-events-none hologram-overlay opacity-30"></div>
+
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 px-6 py-4" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3">
+            <div class="flex items-center gap-3">
+                <img src="Asset 1@300x-8 (1).png" alt="Hajri Logo" class="h-10 md:h-12">
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How it Works</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="http://localhost:5173/login" class="hidden sm:block text-sm font-medium hover:text-primaryGreen transition-colors">Log in</a>
+                <a href="http://localhost:5173/login" class="btn-premium !py-2.5 !px-6 !text-sm">Get Started</a>
+                <button class="md:hidden text-primaryGreen" id="mobile-menu-btn">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-dark/98 backdrop-blur-2xl hidden flex-col items-center justify-center gap-8 text-2xl font-display">
+        <button class="absolute top-8 right-8 text-primaryGreen" id="close-menu-btn">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        <a href="#features" class="hover:text-primaryGreen transition-colors">Features</a>
+        <a href="#how-it-works" class="hover:text-primaryGreen transition-colors">How it Works</a>
+        <a href="#pricing" class="hover:text-primaryGreen transition-colors">Pricing</a>
+        <a href="#testimonials" class="hover:text-primaryGreen transition-colors">Testimonials</a>
+        <a href="http://localhost:5173/login" class="mt-4 btn-premium text-center">Get Started</a>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-40 pb-24 px-6 flex flex-col items-center justify-center min-h-screen text-center">
+        <div class="max-w-5xl mx-auto z-10">
+            <div class="inline-flex items-center gap-3 bg-primaryGreen/10 border border-primaryGreen/20 px-5 py-2 rounded-full text-sm font-semibold mb-12 text-primaryGreen" data-aos="fade-down">
+                <span class="flex h-2.5 w-2.5 rounded-full bg-primaryGreen animate-pulse"></span>
+                The Future of Attendance is Here
+            </div>
+            
+            <h1 class="text-6xl md:text-8xl font-display font-extrabold mb-8 leading-tight tracking-tight" data-aos="fade-up">
+                Smart AI <br>
+                <span class="text-green-gradient uppercase">Attendance System</span>
+            </h1>
+            
+            <p class="max-w-2xl mx-auto text-gray-400 text-lg md:text-xl mb-12 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+                Automate tracking with 99.9% accuracy. Secure facial identification, instant parent alerts, and effortless Hajri management.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6" data-aos="fade-up" data-aos-delay="200">
+                <a href="http://localhost:5173/login" class="btn-premium">Get Started Now</a>
+                <button class="btn-secondary flex items-center gap-3">
+                    <i data-lucide="play-circle" class="w-6 h-6 text-primaryGreen"></i>
+                    Watch Demo
+                </button>
+            </div>
+
+            <!-- Trusted by brands -->
+            <div class="mt-32 pt-12 border-t border-white/5" data-aos="fade-up" data-aos-delay="300">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-10">Trusted by Forward-Thinking Institutions</p>
+                <div class="flex flex-wrap justify-center items-center gap-16 md:gap-32 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+                    <span class="text-3xl font-black italic tracking-tighter">SURAKSHA</span>
+                    <span class="text-3xl font-black tracking-tighter">BSA TUITION</span>
+                    <span class="text-3xl font-black tracking-tighter">PRATHAM<span class="text-primaryGreen">TECH</span></span>
+                    <span class="text-3xl font-black tracking-tighter uppercase">Vythal Academy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SIMPLIFIED WORKFLOW -->
+    <section id="how-it-works" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-24" data-aos="fade-up">
+                <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">Effortless Workflow</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Our four-step process ensures a seamless transition to automated attendance.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="scan" class="w-7 h-7 text-primaryGreen"></i></div>
+                    <h3>Face Scan</h3>
+                    <p>Student scans face at school entrance for instant recognition.</p>
+                    <div class="absolute top-6 right-8 text-primaryGreen/10 font-display font-black text-6xl">01</div>
+                </div>
+                <!-- Step 2 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="cpu" class="w-7 h-7 text-primaryGreen"></i></div>
+                    <h3>AI Identify</h3>
+                    <p>Advanced recognition algorithms verify identity in milliseconds.</p>
+                    <div class="absolute top-6 right-8 text-primaryGreen/10 font-display font-black text-6xl">02</div>
+                </div>
+                <!-- Step 3 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="check-circle" class="w-7 h-7 text-primaryGreen"></i></div>
+                    <h3>Sync Data</h3>
+                    <p>Attendance is automatically recorded and synced to the cloud.</p>
+                    <div class="absolute top-6 right-8 text-primaryGreen/10 font-display font-black text-6xl">03</div>
+                </div>
+                <!-- Step 4 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="bell" class="w-7 h-7 text-primaryGreen"></i></div>
+                    <h3>Instant Alert</h3>
+                    <p>SMS and WhatsApp notifications are sent to parents immediately.</p>
+                    <div class="absolute top-6 right-8 text-primaryGreen/10 font-display font-black text-6xl">04</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ENGINEERED FOR EXCELLENCE -->
+    <section id="features" class="py-24 px-6 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">Engineered for <br><span class="text-primaryGreen">Excellence</span></h2>
+                    <p class="text-gray-400 max-w-xl text-lg">Every feature is optimized for high-performance attendance tracking in busy environments.</p>
+                </div>
+                <div data-aos="fade-left">
+                    <a href="#" class="text-primaryGreen font-bold flex items-center gap-2 hover:translate-x-2 transition-transform">
+                        Explore all features <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="user-check" class="text-primaryGreen"></i></div>
+                    <h3>Precision Recognition</h3>
+                    <p>99.9% accuracy rate across varied lighting and demographics.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="zap" class="text-primaryGreen"></i></div>
+                    <h3>Ultra-Fast Scan</h3>
+                    <p>Zero wait time. Recognizes students even while moving.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="shield" class="text-primaryGreen"></i></div>
+                    <h3>Ultimate Security</h3>
+                    <p>Enterprise-grade encryption for all facial and student data.</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="bar-chart-3" class="text-primaryGreen"></i></div>
+                    <h3>Live Analytics</h3>
+                    <p>Monitor attendance trends in real-time on your dashboard.</p>
+                </div>
+                <!-- Feature 5 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="hard-drive" class="text-primaryGreen"></i></div>
+                    <h3>Edge Processing</h3>
+                    <p>All AI analysis happens locally for lightning-fast speeds.</p>
+                </div>
+                <!-- Feature 6 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="scan-line"></div>
+                    <div class="icon-box"><i data-lucide="smartphone" class="text-primaryGreen"></i></div>
+                    <h3>Mobile Ready</h3>
+                    <p>Manage and monitor attendance from any mobile device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE DASHBOARD SECTION -->
+    <section class="py-32 px-6 bg-gradient-to-b from-dark to-primaryGreen/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-24">
+            <div class="flex-1 text-left" data-aos="fade-right">
+                <h2 class="text-4xl md:text-6xl font-display font-bold mb-10 leading-tight">Live Dashboard: <br><span class="text-primaryGreen">Actionable Intelligence</span></h2>
+                <div class="space-y-8">
+                    <div class="flex gap-6 group">
+                        <div class="mt-1 w-10 h-10 rounded-2xl bg-primaryGreen/10 flex items-center justify-center shrink-0 border border-primaryGreen/20 group-hover:bg-primaryGreen group-hover:text-dark transition-all">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-3">Advanced Weekly Reports</h4>
+                            <p class="text-gray-400">Deep-dive into attendance trends with automated PDF summaries.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 group">
+                        <div class="mt-1 w-10 h-10 rounded-2xl bg-primaryGreen/10 flex items-center justify-center shrink-0 border border-primaryGreen/20 group-hover:bg-primaryGreen group-hover:text-dark transition-all">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-3">Individual Progress Tracking</h4>
+                            <p class="text-gray-400">Monitor each student's punctuality over the entire semester.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="http://localhost:5173/" class="mt-8 btn-secondary !py-3 !px-6 !text-sm flex items-center justify-center gap-2 group max-w-fit">
+                    Explore Dashboard <i data-lucide="chevron-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+            <div class="flex-1 relative" data-aos="fade-left">
+                <div class="absolute inset-0 bg-primaryGreen/10 blur-[120px] rounded-full scale-75 animate-pulse"></div>
+                <div class="relative glass p-3 rounded-[2.5rem] border-primaryGreen/30 shadow-2xl">
+                    <img src="dashboard.png" alt="Dashboard Mockup" class="rounded-[2rem] w-full shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">Trusted by Educators</h2>
+                <p class="text-gray-400 text-lg">See why top institutions are choosing Hajri Hub.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="feature-card group" data-aos="fade-up">
+                    <div class="scan-line"></div>
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primaryGreen to-secondaryGreen border-4 border-white/5"></div>
+                        <div>
+                            <h4 class="font-bold text-lg text-white">Sameer Khan</h4>
+                            <p class="text-sm text-primaryGreen">Director, BSA Academy</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 italic">"Hajri Hub has completely eliminated the morning crowd. It's fast, reliable, and our parents are thrilled."</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="feature-card group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="scan-line"></div>
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-green-300 to-primaryGreen border-4 border-white/5"></div>
+                        <div>
+                            <h4 class="font-bold text-lg text-white">Priya Sharma</h4>
+                            <p class="text-sm text-primaryGreen">HOD, Pratham Inst.</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 italic">"The accuracy is amazing. It identifies students even with masks. A must-have for modern schools."</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="feature-card group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="scan-line"></div>
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primaryGreen to-green-800 border-4 border-white/5"></div>
+                        <div>
+                            <h4 class="font-bold text-lg text-white">John Williams</h4>
+                            <p class="text-sm text-primaryGreen">Principal, Vythal Acad.</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 italic">"The real-time alerts gave our parents peace of mind. Our institution's safety rating has increased significantly."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-16 glass rounded-[3.5rem] p-8 md:p-20 relative overflow-hidden">
+                <!-- Decor -->
+                <div class="absolute -top-20 -right-20 w-80 h-80 bg-primaryGreen/10 blur-[100px] rounded-full pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-primaryGreen/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+                <div class="flex-1" data-aos="fade-right">
+                    <h2 class="text-5xl md:text-7xl font-display font-black mb-8 leading-tight">Start Your <br><span class="text-primaryGreen">Free Demo</span></h2>
+                    <p class="text-gray-400 text-xl mb-12 leading-relaxed">Join the hundreds of institutes securing their attendance process with AI. Our team will contact you within 24 hours.</p>
+                    
+                    <div class="space-y-8">
+                        <div class="flex items-center gap-6 group">
+                            <div class="w-14 h-14 rounded-2xl bg-primaryGreen/10 flex items-center justify-center border border-primaryGreen/20 group-hover:bg-primaryGreen group-hover:text-dark transition-all">
+                                <i data-lucide="mail" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xl text-gray-300">hello@hajrihub.ai</span>
+                        </div>
+                        <div class="flex items-center gap-6 group">
+                            <div class="w-14 h-14 rounded-2xl bg-primaryGreen/10 flex items-center justify-center border border-primaryGreen/20 group-hover:bg-primaryGreen group-hover:text-dark transition-all">
+                                <i data-lucide="phone" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xl text-gray-300">+1 (800) HAJRI-AI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1" data-aos="fade-left">
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="text" placeholder="Full Name" class="form-input">
+                            <input type="text" placeholder="Email/Phone" class="form-input">
+                        </div>
+                        <input type="text" placeholder="School/Institute Name" class="form-input">
+                        <textarea rows="5" placeholder="Tell us about your needs..." class="form-input resize-none"></textarea>
+                        <button type="submit" class="w-full btn-premium">Send Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pt-24 pb-12 px-6 border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20 relative z-10">
+            <!-- Col 1: Brand -->
+            <div class="space-y-8" data-aos="fade-up">
+                <img src="Asset 1@300x-8 (1).png" alt="Logo" class="h-12">
+                <p class="text-gray-400 leading-relaxed max-w-xs">
+                    Next-generation AI attendance systems built for speed, security, and effortless institutional management.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primaryGreen transition-all hover:text-dark">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primaryGreen transition-all hover:text-dark">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primaryGreen transition-all hover:text-dark">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Col 2: Product -->
+            <div data-aos="fade-up" data-aos-delay="100">
+                <h4 class="footer-heading"><i data-lucide="box" class="w-5 h-5 text-primaryGreen"></i> Product</h4>
+                <ul class="space-y-4">
+                    <li><a href="#features" class="footer-link">Features</a></li>
+                    <li><a href="#how-it-works" class="footer-link">How it Works</a></li>
+                    <li><a href="#pricing" class="footer-link">Pricing Plans</a></li>
+                    <li><a href="#" class="footer-link">Security Center</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Resources -->
+            <div data-aos="fade-up" data-aos-delay="200">
+                <h4 class="footer-heading"><i data-lucide="folder" class="w-5 h-5 text-primaryGreen"></i> Resources</h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="footer-link">Documentation</a></li>
+                    <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                    <li><a href="#" class="footer-link">Terms of Service</a></li>
+                    <li><a href="#" class="footer-link">Support Hub</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 4: Connect -->
+            <div data-aos="fade-up" data-aos-delay="300">
+                <h4 class="footer-heading"><i data-lucide="mail" class="w-5 h-5 text-primaryGreen"></i> Connect</h4>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-500">Contact our team for a custom quote or institutional implementation.</p>
+                    <a href="mailto:hello@hajrihub.ai" class="block text-primaryGreen font-bold hover:underline">hello@hajrihub.ai</a>
+                    <p class="text-gray-600 text-xs mt-4">+1 (800) HAJRI-AI</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+            <p class="text-gray-600 text-sm">&copy; 2026 Hajri Hub AI. All rights reserved.</p>
+            <div class="flex gap-8">
+                <span class="flex items-center gap-2 text-xs text-gray-500">
+                    <span class="w-2 h-2 rounded-full bg-primaryGreen animate-pulse"></span> SYSTEM OPERATIONAL
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

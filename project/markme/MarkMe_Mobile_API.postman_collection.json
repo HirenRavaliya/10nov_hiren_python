@@ -1,0 +1,1219 @@
+{
+  "info": {
+    "name": "MarkMe – Mobile API v2",
+    "description": "Mobile endpoints for MarkMe app.\n\n1. Set base_url variable\n2. Run Login → tokens auto-saved\n3. All other requests use {{access}} automatically",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "access",
+      "value": ""
+    },
+    {
+      "key": "refresh",
+      "value": ""
+    },
+    {
+      "key": "leave_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var j=pm.response.json();",
+                  "if(j.access) pm.collectionVariables.set('access',j.access);",
+                  "if(j.refresh) pm.collectionVariables.set('refresh',j.refresh);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"SecurePass123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "_response_example": {
+            "access": "<JWT>",
+            "refresh": "<JWT>",
+            "user_id": "uuid",
+            "full_name": "Rahul Shah",
+            "role": "student",
+            "email": "student@example.com",
+            "phone": "9876543210",
+            "org_type": "educational",
+            "student_id": "uuid",
+            "face_registered": true,
+            "roll_number": "CS-2023-042",
+            "organization_id": "uuid",
+            "org_name": "ABC College"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var j=pm.response.json();",
+                  "if(j.access) pm.collectionVariables.set('access',j.access);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/auth/refresh/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "auth",
+                "refresh",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/auth/logout/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "auth",
+                "logout",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "_response_example": {
+            "detail": "Logged out successfully."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "profile",
+                ""
+              ]
+            }
+          },
+          "_response_example": {
+            "id": "uuid",
+            "email": "student@example.com",
+            "full_name": "Rahul Shah",
+            "role": "student",
+            "org_type": "educational",
+            "phone": "9876543210",
+            "profile_pic_url": null,
+            "student_id": "uuid",
+            "face_registered": true,
+            "roll_number": "CS-2023-042",
+            "guardian_name": "Sanjay Shah",
+            "guardian_phone": "9123456789",
+            "guardian_email": "sanjay@example.com",
+            "organization_id": "uuid",
+            "org_name": "ABC College",
+            "date_joined": "2026-05-12T10:00:00Z"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "profile",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Rahul D. Shah\",\n  \"phone\": \"9000000099\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Save FCM Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/profile/fcm-token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "profile",
+                "fcm-token",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fcm_token\": \"<firebase_device_token>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "_response_example": {
+            "detail": "FCM token updated."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Calendar",
+      "item": [
+        {
+          "name": "Personal Calendar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/calendar/?month=4&year=2026",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "calendar",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "4"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                }
+              ]
+            }
+          },
+          "_response_example": {
+            "month": "April 2026",
+            "year": 2026,
+            "month_number": 4,
+            "days": [
+              {
+                "date": "2026-04-01",
+                "day": 1,
+                "weekday": "Wed",
+                "status": "PRESENT",
+                "time_in": "09:10 AM",
+                "is_leave": false,
+                "is_today": false
+              },
+              {
+                "date": "2026-04-02",
+                "day": 2,
+                "weekday": "Thu",
+                "status": "ABSENT",
+                "time_in": null,
+                "is_leave": false,
+                "is_today": false
+              },
+              {
+                "date": "2026-04-03",
+                "day": 3,
+                "weekday": "Fri",
+                "status": "LEAVE",
+                "time_in": null,
+                "is_leave": true,
+                "is_today": false
+              }
+            ],
+            "stats": {
+              "attendance_rate": "71.4%",
+              "avg_check_in": "09:15 AM",
+              "days_absent": 8,
+              "leave_days": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Attendance",
+      "item": [
+        {
+          "name": "Attendance History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/attendance/history/?month=5&year=2026",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "attendance",
+                "history",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "5"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true,
+                  "description": "PRESENT | ABSENT | LATE"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "_response_example": {
+            "count": 20,
+            "next": null,
+            "previous": null,
+            "results": [
+              {
+                "id": "uuid",
+                "date": "2026-05-12",
+                "date_display": "12 May 2026",
+                "time_display": "09:15 AM",
+                "status": "PRESENT",
+                "status_label": "Present",
+                "method": "FACE",
+                "notes": ""
+              }
+            ]
+          }
+        },
+        {
+          "name": "Attendance Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/attendance/report/?month=4&year=2026",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "attendance",
+                "report",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "4"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                }
+              ]
+            }
+          },
+          "_response_example": {
+            "month": "April 2026",
+            "year": 2026,
+            "month_number": 4,
+            "days": [
+              {
+                "date": "2026-04-01",
+                "day": 1,
+                "weekday": "Wed",
+                "status": "PRESENT",
+                "time_in": "09:10 AM",
+                "is_leave": false,
+                "is_today": false
+              }
+            ],
+            "stats": {
+              "attendance_rate": "71.4%",
+              "avg_check_in": "09:15 AM",
+              "days_absent": 8,
+              "leave_days": 2
+            },
+            "performance_trend": [
+              {
+                "date": "2026-04-01",
+                "date_display": "01 Apr",
+                "rate": 100.0
+              },
+              {
+                "date": "2026-04-02",
+                "date_display": "02 Apr",
+                "rate": 50.0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Analytics",
+      "item": [
+        {
+          "name": "Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/analytics/?months=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "analytics",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "months",
+                  "value": "5",
+                  "description": "How many months for bar chart (max 12)"
+                }
+              ]
+            }
+          },
+          "_response_example": {
+            "attendance_percentage": 75.0,
+            "punctuality_percentage": 85.7,
+            "distribution": {
+              "month": "May 2026",
+              "total_days": 31,
+              "present": 20,
+              "absent": 9,
+              "late": 2,
+              "leave": 0
+            },
+            "monthly_trends": [
+              {
+                "month": "Jan",
+                "month_number": 1,
+                "year": 2026,
+                "present": 18,
+                "late": 3,
+                "absent": 4,
+                "total": 25
+              },
+              {
+                "month": "Feb",
+                "month_number": 2,
+                "year": 2026,
+                "present": 15,
+                "late": 2,
+                "absent": 3,
+                "total": 20
+              },
+              {
+                "month": "Mar",
+                "month_number": 3,
+                "year": 2026,
+                "present": 20,
+                "late": 1,
+                "absent": 5,
+                "total": 26
+              },
+              {
+                "month": "Apr",
+                "month_number": 4,
+                "year": 2026,
+                "present": 17,
+                "late": 4,
+                "absent": 3,
+                "total": 24
+              },
+              {
+                "month": "May",
+                "month_number": 5,
+                "year": 2026,
+                "present": 10,
+                "late": 1,
+                "absent": 2,
+                "total": 13
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Export",
+      "item": [
+        {
+          "name": "Export CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/export/csv/?month=5&year=2026",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "export",
+                "csv",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "5"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                }
+              ]
+            }
+          },
+          "_note": "Returns a downloadable CSV file. Save as attachment."
+        },
+        {
+          "name": "Export PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/export/pdf/?month=5&year=2026",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "export",
+                "pdf",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "5"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                }
+              ]
+            }
+          },
+          "_note": "Returns a downloadable PDF. Requires reportlab on server."
+        }
+      ]
+    },
+    {
+      "name": "7. Notifications",
+      "item": [
+        {
+          "name": "List – All",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/?filter=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "all",
+                  "description": "all | unread | attendance | system"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "_response_example": {
+            "count": 5,
+            "next": null,
+            "previous": null,
+            "results": [
+              {
+                "id": "uuid",
+                "notification_type": "ATTENDANCE",
+                "type_label": "Attendance",
+                "title": "Attendance Marked!",
+                "message": "Hi Rahul, your attendance has been recorded at 09:15 AM on 12 May 2026.",
+                "status": "SENT",
+                "sent_at": "2026-05-12T03:45:00Z",
+                "created_at": "2026-05-12T03:45:00Z",
+                "time_ago": "2h ago",
+                "is_read": true
+              },
+              {
+                "id": "uuid2",
+                "notification_type": "SYSTEM",
+                "type_label": "System",
+                "title": "Leave Request Update",
+                "message": "Your leave request has been approved.",
+                "status": "PENDING",
+                "sent_at": null,
+                "created_at": "2026-05-11T10:00:00Z",
+                "time_ago": "1d ago",
+                "is_read": false
+              }
+            ]
+          }
+        },
+        {
+          "name": "List – Unread only",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/?filter=unread",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "unread"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List – Attendance only",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/?filter=attendance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "attendance"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List – System only",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/?filter=system",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "system"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Unread Count (Badge)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/unread-count/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                "unread-count",
+                ""
+              ]
+            }
+          },
+          "_response_example": {
+            "unread_count": 3
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/mark-read/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                "mark-read",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "_response_example": {
+            "marked": 3
+          }
+        },
+        {
+          "name": "Mark Specific as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/notifications/mark-read/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "notifications",
+                "mark-read",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notification_ids\": [\"uuid-1\", \"uuid-2\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "_response_example": {
+            "marked": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Leave Requests (Educational Only)",
+      "description": "Returns HTTP 403 if org_type is 'company'. Reason choices: VACATION | SICK | PERSONAL",
+      "item": [
+        {
+          "name": "List My Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/leave-requests/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "leave-requests",
+                ""
+              ]
+            }
+          },
+          "_response_example": {
+            "count": 2,
+            "next": null,
+            "previous": null,
+            "results": [
+              {
+                "id": "uuid",
+                "reason": "VACATION",
+                "reason_display": "Vacation",
+                "description": "Family trip",
+                "start_date": "2026-05-20",
+                "end_date": "2026-05-22",
+                "duration_days": 3,
+                "proof_doc_url": null,
+                "status": "PENDING",
+                "status_display": "Pending",
+                "reviewed_by_name": null,
+                "review_note": "",
+                "reviewed_at": null,
+                "created_at": "2026-05-12T10:00:00Z",
+                "created_display": "12 May 2026"
+              },
+              {
+                "id": "uuid2",
+                "reason": "SICK",
+                "reason_display": "Sick",
+                "description": "Fever",
+                "start_date": "2026-05-10",
+                "end_date": "2026-05-11",
+                "duration_days": 2,
+                "proof_doc_url": "http://server/media/leave_proofs/cert.pdf",
+                "status": "APPROVED",
+                "status_display": "Approved",
+                "reviewed_by_name": "Prof. Sharma",
+                "review_note": "Get well soon",
+                "reviewed_at": "2026-05-10T08:00:00Z",
+                "created_at": "2026-05-09T20:00:00Z",
+                "created_display": "09 May 2026"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Submit Request (JSON – no file)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/leave-requests/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "leave-requests",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"SICK\",\n  \"description\": \"Down with fever, doctor advised 2 days rest.\",\n  \"start_date\": \"2026-05-20\",\n  \"end_date\": \"2026-05-21\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "_note": "reason must be: VACATION | SICK | PERSONAL",
+          "_response_example": {
+            "id": "uuid",
+            "reason": "SICK",
+            "reason_display": "Sick",
+            "description": "Down with fever",
+            "start_date": "2026-05-20",
+            "end_date": "2026-05-21",
+            "duration_days": 2,
+            "proof_doc_url": null,
+            "status": "PENDING",
+            "status_display": "Pending",
+            "reviewed_by_name": null,
+            "review_note": "",
+            "reviewed_at": null,
+            "created_at": "2026-05-12T10:00:00Z",
+            "created_display": "12 May 2026"
+          }
+        },
+        {
+          "name": "Submit Request (with Medical Certificate)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/leave-requests/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "leave-requests",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "reason",
+                  "value": "SICK",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Doctor prescribed rest",
+                  "type": "text"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-05-20",
+                  "type": "text"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-05-21",
+                  "type": "text"
+                },
+                {
+                  "key": "proof_doc",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Leave Request Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/leave-requests/{{leave_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "leave-requests",
+                "{{leave_id}}",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Withdraw Request (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mobile/leave-requests/{{leave_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mobile",
+                "leave-requests",
+                "{{leave_id}}",
+                ""
+              ]
+            }
+          },
+          "_note": "Only works if status is PENDING. Returns 204 No Content."
+        }
+      ]
+    },
+    {
+      "name": "Error Reference",
+      "item": [
+        {
+          "name": "401 – Token expired",
+          "_response_example": {
+            "detail": "Given token not valid for any token type",
+            "code": "token_not_valid"
+          }
+        },
+        {
+          "name": "403 – Company org accessing Leave",
+          "_response_example": {
+            "detail": "Leave requests are only available for educational institutions."
+          }
+        },
+        {
+          "name": "400 – Validation error",
+          "_response_example": {
+            "end_date": [
+              "End date must be on or after start date."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

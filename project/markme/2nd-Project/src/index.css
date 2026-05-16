@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+@keyframes scan-line {
+  0%   { transform: translateY(0); opacity: 1; }
+  50%  { opacity: 0.6; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.animate-scan-line {
+  animation: scan-line 2.5s linear infinite;
+  top: 0;
+  position: absolute;
+}
